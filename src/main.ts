@@ -85,7 +85,7 @@ async function runDigger() {
 
   // Create a screen from 2d plane
   const screen = new Mesh();
-  screen.geometry = new PlaneGeometry(0.7, 0.6);
+  screen.geometry = new PlaneGeometry(0.995, 0.76);
   screen.material = new MeshBasicMaterial({ map: texture });
   screen.position.set(0, 1.43, 0.2);
   const screenGUI = gui.addFolder('Screen');
