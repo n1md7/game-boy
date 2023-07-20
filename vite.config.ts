@@ -4,6 +4,8 @@ import glsl from 'vite-plugin-glsl';
 
 export default defineConfig({
   publicDir: 'public',
+  envPrefix: 'GAME_',
+  envDir: process.cwd(),
   server: {
     port: 4096,
     host: '0.0.0.0',

@@ -28,7 +28,9 @@ declare const emulators: any;
 async function runDigger() {
   stop();
 
-  const bundle = await emulatorsUi.network.resolveBundle('./digger.jsdos');
+  const rootPath = import.meta.env.GAME_BASE_URL || '.';
+  console.log('rootPath', rootPath);
+  const bundle = await emulatorsUi.network.resolveBundle(`${rootPath}/digger.jsdos`);
   const ciPromise = emulators.dosWorker(bundle);
   const rgba = new Uint8ClampedArray(320 * 200 * 4);
   ciPromise.then((ci: any) => {
@@ -105,7 +107,7 @@ async function runDigger() {
     const timestamp = new Timestamp();
     const windowUtils = new WindowUtils(renderer, camera);
     (function onSetup() {
-      performance.show();
+      Debug.enabled() && performance.show();
       windowUtils.subscribe();
       player.subscribe();
       runDigger();
