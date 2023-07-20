@@ -20,7 +20,7 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 700,
     sourcemap: true,
-    assetsDir: 'assets',
+    assetsDir: '.',
     emptyOutDir: true,
   },
   plugins: [glsl()],
