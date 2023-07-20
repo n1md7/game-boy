@@ -16,7 +16,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode=production",
     "test": "vitest --mode=test --no-watch",
     "preview": "vite preview",
     "format": "npx lint-staged",
