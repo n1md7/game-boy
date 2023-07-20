@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
+    "js-dos": "^7.1.11",
     "lil-gui": "^0.18.2",
     "stats.js": "^0.17.0",
     "three": "^0.154.0"

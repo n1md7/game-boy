@@ -48,9 +48,6 @@ export class InputController extends EventTarget {
       case 'ShiftLeft':
         this.isShiftPressed = true;
         break;
-      case 'Space':
-        this.isSpacePressed = true;
-        break;
       case 'KeyF':
         this.dispatchEvent(new Event('flashlight:toggle'));
         break;
