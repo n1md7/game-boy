@@ -1,0 +1,11 @@
+Model Information:
+* title:	M60 With Hands And Animation
+* source:	https://sketchfab.com/3d-models/m60-with-hands-and-animation-92b82aec12074ae1a6dfb880ac7ee373
+* author:	BillyTheKid (https://sketchfab.com/FGmodels)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "M60 With Hands And Animation" (https://sketchfab.com/3d-models/m60-with-hands-and-animation-92b82aec12074ae1a6dfb880ac7ee373) by BillyTheKid (https://sketchfab.com/FGmodels) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

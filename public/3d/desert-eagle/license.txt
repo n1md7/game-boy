@@ -1,0 +1,11 @@
+Model Information:
+* title:	Deagle With Hands And Animations
+* source:	https://sketchfab.com/3d-models/deagle-with-hands-and-animations-005eef782468428583fb3e3155cf0ceb
+* author:	BillyTheKid (https://sketchfab.com/FGmodels)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Deagle With Hands And Animations" (https://sketchfab.com/3d-models/deagle-with-hands-and-animations-005eef782468428583fb3e3155cf0ceb) by BillyTheKid (https://sketchfab.com/FGmodels) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

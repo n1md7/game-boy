@@ -1,0 +1,86 @@
+{
+  "name": "threejs-setup",
+  "private": true,
+  "description": "ThreeJS boilerplate with Vite,TS and Electron",
+  "author": {
+    "name": "Harry Kodua",
+    "email": "b.kodua@gmail.com",
+    "url": "https://github.com/n1md7"
+  },
+  "license": "ISC",
+  "main": "electron-start.cjs",
+  "bugs": {
+    "url": "https://github.com/n1md7/three-boilerplate/issues"
+  },
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "test": "vitest --mode=test --no-watch",
+    "preview": "vite preview",
+    "format": "npx lint-staged",
+    "electron": "electron electron-start.cjs",
+    "prepare": "husky install",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.2.1",
+    "@electron-forge/maker-deb": "^6.2.1",
+    "@electron-forge/maker-rpm": "^6.2.1",
+    "@electron-forge/maker-squirrel": "^6.2.1",
+    "@electron-forge/maker-zip": "^6.2.1",
+    "@electron-forge/plugin-vite": "^6.2.1",
+    "@electron-forge/publisher-s3": "^6.2.1",
+    "@types/jest": "^29.5.2",
+    "@types/stats.js": "^0.17.0",
+    "@types/three": "^0.152.1",
+    "electron": "^25.2.0",
+    "husky": "^8.0.3",
+    "jsdom": "^22.1.0",
+    "lint-staged": "^13.2.3",
+    "prettier": "2.8.8",
+    "typescript": "^5.1.6",
+    "vite": "^4.3.9",
+    "vite-plugin-glsl": "^1.1.2",
+    "vitest": "^0.32.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "lil-gui": "^0.18.2",
+    "stats.js": "^0.17.0",
+    "three": "^0.154.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coveragePathIgnorePatterns": [
+      "main.ts"
+    ],
+    "coverageDirectory": "../reports/coverage",
+    "testEnvironment": "node"
+  },
+  "engines": {
+    "node": "18.15.0",
+    "npm": ">=9.0.0"
+  },
+  "engineStrict": true
+}
