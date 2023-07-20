@@ -7,5 +7,6 @@ export default class Camera extends PerspectiveCamera {
 
     this.position.set(0, 2, 20);
     this.rotation.order = 'YXZ';
+    this.lookAt(0, 2.5, 0);
   }
 }

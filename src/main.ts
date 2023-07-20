@@ -28,7 +28,7 @@ declare const emulators: any;
 async function runDigger() {
   stop();
 
-  const bundle = await emulatorsUi.network.resolveBundle('/digger.jsdos');
+  const bundle = await emulatorsUi.network.resolveBundle('./digger.jsdos');
   const ciPromise = emulators.dosWorker(bundle);
   const rgba = new Uint8ClampedArray(320 * 200 * 4);
   ciPromise.then((ci: any) => {
@@ -111,7 +111,7 @@ async function runDigger() {
       runDigger();
     })();
     (function gameLoop() {
-      performance.start();
+      Debug.enabled() && performance.start();
       const delta = clock.getDelta();
       if (timestamp.delta >= DELAY_MS) {
         player.update(delta);
@@ -122,7 +122,7 @@ async function runDigger() {
         renderer.render(scene, camera);
       }
 
-      performance.end();
+      Debug.enabled() && performance.end();
       requestAnimationFrame(gameLoop);
     })();
   }
