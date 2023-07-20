@@ -1,10 +1,9 @@
 import { Camera } from '@/src/setup';
-import { FlashLight } from '@/src/first-person/components/FlashLight';
 
 export class MouseController extends EventTarget {
   private readonly mouseSensitivity = 0.002;
 
-  constructor(private readonly camera: Camera, private readonly flashlight: FlashLight) {
+  constructor(private readonly camera: Camera) {
     super();
   }
 
@@ -29,17 +28,15 @@ export class MouseController extends EventTarget {
 
     // INFO: clamp camera rotation on X axis
     this.camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.camera.rotation.x));
-
-    this.flashlight.adjustBy(this.camera);
   }
 
   private mouseClickHandler() {
     if (document.pointerLockElement !== null) {
-      this.dispatchEvent(new Event('weapon:start-shoot'));
+      this.dispatchEvent(new Event('mouse:click-start'));
     }
   }
 
   private mouseReleaseHandler() {
-    this.dispatchEvent(new Event('weapon:stop-shoot'));
+    this.dispatchEvent(new Event('mouse:click-end'));
   }
 }

@@ -13,7 +13,7 @@ export class Ground extends RigidBody {
     texture.repeat.set(this.width, this.depth);
 
     const ground = new Mesh(
-      new PlaneGeometry(256, 256),
+      new PlaneGeometry(32, 32),
       new MeshStandardMaterial({
         map: texture,
         side: DoubleSide,

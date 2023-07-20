@@ -1,13 +1,12 @@
 import { GUI } from 'lil-gui';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { AxesHelper, GridHelper, PointLight } from 'three';
-import { Texture, RepeatWrapping } from 'three';
-import { Scene as ThreeScene, Color, Fog, PointLightHelper } from 'three';
-import { MeshStandardMaterial, Mesh, BoxGeometry } from 'three';
+import { AxesHelper, GridHelper, RectAreaLight } from 'three';
+import { Texture } from 'three';
+import { Scene as ThreeScene, Color, Fog } from 'three';
 import { Ground } from '@/src/setup/scene/components/Ground';
 import { Box } from '@/src/setup/scene/components/Box';
-import { Target } from '@/src/setup/scene/components/Target';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 
 export default class Scene extends ThreeScene {
   constructor(
@@ -40,16 +39,14 @@ export default class Scene extends ThreeScene {
   }
 
   addLight() {
-    const light = new PointLight('#FFFFFF', 1, 100);
-    light.castShadow = true;
-    light.position.set(2.5, 7.5, 15);
-    this.add(light, new PointLightHelper(light));
+    const light = new RectAreaLight('#FFFFFF', 3, 2, 2);
+    light.position.set(0, 3.5, 2);
+    this.add(light, new RectAreaLightHelper(light, 0xffffff));
+    light.lookAt(0, 0, 0);
 
     const gui = this.gui.addFolder('Light');
     gui.add(light, 'intensity', 0, 20, 0.01);
     gui.addColor(light, 'color');
-    gui.add(light, 'distance', 0, 100, 0.01);
-    gui.add(light, 'decay', 0, 10, 0.01);
     gui.close();
 
     return this;
@@ -80,41 +77,6 @@ export default class Scene extends ThreeScene {
       this.world.fromGraphNode(box);
       this.add(box);
     }
-
-    return this;
-  }
-
-  addStairs(texture: Texture, count = 10) {
-    const map = texture.clone();
-
-    const width = 3;
-
-    map.wrapS = RepeatWrapping;
-    map.wrapT = RepeatWrapping;
-
-    map.repeat.set(width, 1);
-
-    const boxGeometry = new BoxGeometry(width, 1, 1);
-    const boxMaterial = new MeshStandardMaterial({ map });
-
-    for (let i = 0; i < count; i++) {
-      const box = new Mesh(boxGeometry, boxMaterial);
-      box.position.set(-this.width / 2 + 2, i * 0.5, -this.depth / 2 + 2 + i);
-      box.castShadow = true;
-      box.receiveShadow = true;
-      this.world.fromGraphNode(box);
-      this.add(box);
-    }
-
-    return this;
-  }
-
-  addShootingTarget(gltf: GLTF) {
-    const target = new Target();
-    target.position.set(0, -1, -32);
-    target.scale.set(0.5, 0.5, 0.5);
-    target.add(gltf.scene);
-    this.add(target);
 
     return this;
   }

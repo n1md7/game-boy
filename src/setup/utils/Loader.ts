@@ -1,4 +1,3 @@
-import { CrosshairController } from '@/src/first-person/controllers/CrosshairController';
 import { ImageLoader, LoadingManager, Texture, TextureLoader } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
@@ -27,7 +26,6 @@ export const manager = new LoadingManager(
     button.onclick = () => {
       assetLoaderView.hidden = true;
       canvas.hidden = false;
-      CrosshairController.getInstance().show();
       document.body.requestPointerLock();
     };
     assetLoaderView.innerHTML = '';

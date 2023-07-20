@@ -11,18 +11,16 @@ import GUI from 'lil-gui';
 
 import '@/src/styles/style.css';
 
-(async function setup() {
-  const aGLTF = new MyGLTFLoader();
-  const aIMAGE = new MyTextureLoader();
-  const [groundTexture, boxTexture, skyGLTF, shootingTargetGLTF, guns] = await Promise.all([
-    aIMAGE.load('images/checker.png'),
-    aIMAGE.load('images/box.png'),
-    aGLTF.load('3d/sky_pano/scene.gltf'),
-    aGLTF.load('3d/shooting-target/scene.gltf'),
-    Promise.all([aGLTF.load('3d/desert-eagle/scene.gltf'), aGLTF.load('3d/m60/scene.gltf')]),
-  ]);
+const aGLTF = new MyGLTFLoader();
+const aIMAGE = new MyTextureLoader();
 
-  const [desertEagleGLTF, m60GLTF] = guns;
+(async function setup() {
+  const [groundTexture, skyGLTF, gameBoy, ducky] = await Promise.all([
+    aIMAGE.load('images/checker.png'),
+    aGLTF.load('3d/sky-pano/scene.gltf'),
+    aGLTF.load('3d/game-boy/scene.gltf'),
+    aGLTF.load('3d/duck/scene.gltf'),
+  ]);
 
   const gui = new GUI();
   const world = new Octree();
@@ -32,20 +30,18 @@ import '@/src/styles/style.css';
 
   gui.show(Debug.enabled());
 
-  const player = new Player(camera, world, scene, gui.addFolder('Player'), {
-    DesertEagle: desertEagleGLTF,
-    M60: m60GLTF,
-  });
+  const player = new Player(camera, world);
 
-  scene
-    .addLight()
-    .addGround(groundTexture)
-    .addSky(skyGLTF)
-    .addAxisHelper()
-    .addGridHelper()
-    .addStairs(boxTexture)
-    .addShootingTarget(shootingTargetGLTF)
-    .addBoxes(boxTexture, 64);
+  world.fromGraphNode(gameBoy.scene);
+  world.fromGraphNode(ducky.scene);
+
+  ducky.scene.position.set(0, 2, 0);
+  ducky.scene.scale.multiplyScalar(0.25);
+  gameBoy.scene.position.set(0, 1, 0);
+
+  scene.add(gameBoy.scene, ducky.scene);
+
+  scene.addLight().addGround(groundTexture).addSky(skyGLTF).addFog();
 
   {
     const FPS = 60;
@@ -53,10 +49,11 @@ import '@/src/styles/style.css';
     const clock = new Clock();
     const performance = new Performance();
     const timestamp = new Timestamp();
-    const windowUtils = new WindowUtils(renderer, camera, player.weapon.camera);
+    const windowUtils = new WindowUtils(renderer, camera);
     (function onSetup() {
       performance.show();
       windowUtils.subscribe();
+      player.subscribe();
     })();
     (function gameLoop() {
       performance.start();
@@ -67,19 +64,11 @@ import '@/src/styles/style.css';
 
         timestamp.update();
 
-        renderer.clear(); // Clear the color buffer
         renderer.render(scene, camera);
-
-        renderer.clearDepth(); // Clear only the depth buffer
-
-        camera.getWorldPosition(player.weapon.camera.position);
-        camera.getWorldQuaternion(player.weapon.camera.quaternion);
-
-        renderer.render(player.weapon.scene, player.weapon.camera);
       }
 
-      requestAnimationFrame(gameLoop);
       performance.end();
+      requestAnimationFrame(gameLoop);
     })();
   }
 })().catch(console.error);

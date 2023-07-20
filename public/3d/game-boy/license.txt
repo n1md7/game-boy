@@ -1,0 +1,11 @@
+Model Information:
+* title:	Game Boy Original
+* source:	https://sketchfab.com/3d-models/game-boy-original-1fbe899d33004f7bb4cb4b74c8d8c881
+* author:	danny_p3d (https://sketchfab.com/dannyp_3d)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Game Boy Original" (https://sketchfab.com/3d-models/game-boy-original-1fbe899d33004f7bb4cb4b74c8d8c881) by danny_p3d (https://sketchfab.com/dannyp_3d) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

@@ -1,18 +1,9 @@
 import { Vector3 } from 'three';
 import { Capsule } from 'three/examples/jsm/math/Capsule';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { InputController } from '@/src/first-person/controllers/InputController';
 import { MouseController } from '@/src/first-person/controllers/MouseController';
-import { CrosshairController } from '@/src/first-person/controllers/CrosshairController';
-import { WeaponController } from '@/src/first-person/controllers/WeaponController';
-import { FlashLight } from '@/src/first-person/components/FlashLight';
-import { Scene, Camera } from '@/src/setup';
-import GUI from 'lil-gui';
-
-export type WeaponName = 'DesertEagle' | 'M60'; // | 'M16' | 'MP5' | 'P90' | 'AWP' | 'M249' | 'Knife'
-export type WeaponSound = 'shoot' | 'reload' | 'empty' | 'equip' | 'unequip';
-export type Assets = Record<WeaponName, GLTF>;
+import { Camera } from '@/src/setup';
 
 export class Player {
   private readonly GRAVITY = 30;
@@ -23,54 +14,27 @@ export class Player {
   private readonly playerVelocity: Vector3;
   private readonly inputController: InputController;
   private readonly mouseController: MouseController;
-  private readonly flashlight: FlashLight;
-  private readonly crosshairController: CrosshairController;
-  private readonly weaponController: WeaponController;
 
-  private playerIsGrounded = false; // On the floor (touching)
-  private accuracy = 100;
+  private playerIsGrounded = false;
 
-  constructor(
-    private readonly camera: Camera,
-    private readonly world: Octree,
-    private readonly scene: Scene,
-    gui: GUI,
-    assets: Assets
-  ) {
+  constructor(private readonly camera: Camera, private readonly world: Octree) {
     const start = new Vector3(0, 0.35, 0);
     const end = new Vector3(0, 1, 0);
     this.playerBody = new Capsule(start, end, 0.35);
     this.playerVelocity = new Vector3();
     this.inputController = new InputController();
-    this.flashlight = new FlashLight(gui.addFolder('Flashlight'));
-    this.weaponController = new WeaponController(gui.addFolder('Weapons'), assets, scene, camera);
-    this.mouseController = new MouseController(camera, this.flashlight);
-    this.crosshairController = CrosshairController.getInstance();
+    this.mouseController = new MouseController(camera);
 
-    this.scene.add(this.flashlight, this.flashlight.target);
-
-    this.subscribe();
-    // Set Player Y to be 30 units above the ground
-    this.playerBody.translate(new Vector3(0, 5, 0));
-  }
-
-  get weapon() {
-    return this.weaponController;
+    // Starting position
+    this.playerBody.translate(new Vector3(0, 2, 4));
   }
 
   subscribe() {
     this.inputController.subscribe();
     this.mouseController.subscribe();
 
-    this.inputController.addEventListener('flashlight:toggle', () => this.flashlight.toggle());
-    this.mouseController.addEventListener('weapon:start-shoot', () => this.weapon.startShoot());
-    this.mouseController.addEventListener('weapon:stop-shoot', () => this.weapon.stopShoot());
-    this.inputController.addEventListener('weapon:reload', () => this.weapon.reload());
-    this.inputController.addEventListener('weapon:switch', (event) => {
-      if (event instanceof CustomEvent) {
-        this.weapon.setWeapon(event.detail.weaponIndex);
-      }
-    });
+    this.mouseController.addEventListener('mouse:click-start', () => null);
+    this.mouseController.addEventListener('mouse:click-end', () => null);
   }
 
   reset() {
@@ -89,8 +53,6 @@ export class Player {
       this.evaluateUserInput(deltaTime);
       this.updatePlayer(deltaTime);
     }
-    this.weapon.update(delta);
-    this.updateCrosshair();
   }
 
   private getSideVector(vector: Vector3) {
@@ -164,9 +126,6 @@ export class Player {
 
     // Update the camera position
     this.camera.position.copy(this.playerBody.end);
-
-    this.flashlight.adjustBy(this.camera);
-    this.weapon.adjustBy(this.camera);
   }
 
   private evaluateCollisions() {
@@ -182,16 +141,5 @@ export class Player {
 
       this.playerBody.translate(intersect.normal.multiplyScalar(intersect.depth));
     }
-  }
-
-  private updateCrosshair() {
-    this.accuracy = 100;
-
-    const { sprint, jump, move } = this.inputController.says;
-
-    if (this.weapon.triggerIsPressed) this.accuracy -= 50;
-    if (move.anyDirection) this.accuracy -= 25 + (sprint ? 25 : 0);
-    if (jump) this.accuracy -= 50;
-    this.crosshairController.setAccuracy(this.accuracy);
   }
 }
