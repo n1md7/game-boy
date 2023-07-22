@@ -7,7 +7,7 @@ import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Timestamp } from '@/src/setup/utils/Timestamp';
 import { Renderer, Camera, Scene } from '@/src/setup';
 import { Player } from '@/src/first-person/Player';
-import { Debug } from '@/src/setup/utils/common';
+import { Debug, delay } from '@/src/setup/utils/common';
 import { GameBoy, Cartridge } from '@/src/game-boy/GameBoy';
 import { Clock } from 'three';
 import GUI from 'lil-gui';
@@ -18,11 +18,10 @@ const aGLTF = new MyGLTFLoader();
 const aIMAGE = new MyTextureLoader();
 
 (async function setup() {
-  const [groundTexture, skyGLTF, gameBoyGLTF, ducky] = await Promise.all([
+  const [groundTexture, skyGLTF, gameBoyGLTF] = await Promise.all([
     aIMAGE.load('images/checker.png'),
     aGLTF.load('3d/sky-pano/scene.gltf'),
     aGLTF.load('3d/game-boy/scene.gltf'),
-    aGLTF.load('3d/duck/scene.gltf'),
   ]);
 
   const gui = new GUI();
@@ -31,40 +30,16 @@ const aIMAGE = new MyTextureLoader();
   const camera = new Camera();
   const scene = new Scene(gui.addFolder('Main scene'), world);
 
-  const gameBoys: GameBoy[] = [new GameBoy(gameBoyGLTF)];
+  const gameBoy = new GameBoy(gameBoyGLTF);
+  gameBoy.scene.position.set(0, 1, 0);
+  // gameBoy.scene.scale.set(0.25, 0.25, 0.25);
+  scene.add(gameBoy.scene);
 
-  let i = 0;
-  for (const gameBoy of gameBoys) {
-    gameBoy.insertCartridge(Cartridge.Digger);
-    gameBoy.scene.position.set(0, 1, i++);
-    // gameBoy.scene.scale.set(0.25, 0.25, 0.25);
-    scene.add(gameBoy.scene);
-    setTimeout(() => gameBoy.runGame(), 4000);
-    // gameBoy.getCurrentGame()?.ci.mute();
-
-    // Write "Find Cartridges" text in the middle of the screen
-    gameBoy.screen.context.font = '24px sans-serif';
-    gameBoy.screen.context.fillStyle = 'white';
-    gameBoy.screen.context.textAlign = 'center';
-    gameBoy.screen.context.textBaseline = 'middle';
-
-    const { width, height } = gameBoy.screen.size;
-    const text = 'Find Cartridges to play';
-    gameBoy.screen.context.fillText(text, width / 2, height / 2);
-  }
+  delay(4000).then(() => gameBoy.insertCartridge(Cartridge.Doom));
 
   gui.show(Debug.enabled());
 
   const player = new Player(camera, world);
-
-  world.fromGraphNode(gameBoyGLTF.scene);
-  world.fromGraphNode(ducky.scene);
-
-  ducky.scene.position.set(0, 2, 0);
-  ducky.scene.rotation.y = -Math.PI / 2;
-  ducky.scene.scale.multiplyScalar(0.25);
-
-  scene.add(ducky.scene);
 
   scene.addLight().addGround(groundTexture).addSky(skyGLTF).addFog();
 

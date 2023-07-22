@@ -2,15 +2,16 @@ import { CommandInterface } from 'emulators';
 import { Screen } from '@/src/game-boy/components/Screen';
 
 export abstract class Game {
-  protected abstract readonly bundlePath: string;
+  protected abstract name: string;
   protected readonly rootPath = import.meta.env.GAME_BASE_URL || '.';
 
   protected commandInterface!: CommandInterface;
   protected screen!: Screen;
 
   private rgba!: Uint8ClampedArray;
+  private bundle!: Uint8Array;
 
-  protected constructor() {
+  public constructor() {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFrame = this.onFrame.bind(this);
@@ -18,6 +19,10 @@ export abstract class Game {
 
   public get ci() {
     return this.commandInterface;
+  }
+
+  protected get bundlePath() {
+    return `${this.rootPath}/games/${this.name}.jsdos`;
   }
 
   private get length() {
@@ -28,11 +33,14 @@ export abstract class Game {
     this.screen = screen;
   }
 
+  public async load() {
+    this.bundle = await emulatorsUi.network.resolveBundle(this.bundlePath);
+  }
+
   public async run() {
     this.rgba = new Uint8ClampedArray(this.length * 4);
 
-    const bundle = await emulatorsUi.network.resolveBundle(this.bundlePath);
-    this.commandInterface = await emulators.dosboxWorker(bundle);
+    this.commandInterface = await emulators.dosboxWorker(this.bundle);
     this.subscribeUserInputs();
 
     return this;
