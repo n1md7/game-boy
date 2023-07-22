@@ -37,10 +37,10 @@ const aIMAGE = new MyTextureLoader();
   for (const gameBoy of gameBoys) {
     gameBoy.insertCartridge(Cartridge.Digger);
     gameBoy.scene.position.set(0, 1, i++);
-    gameBoy.scene.scale.set(0.25, 0.25, 0.25);
+    // gameBoy.scene.scale.set(0.25, 0.25, 0.25);
     scene.add(gameBoy.scene);
     await gameBoy.runGame();
-    gameBoy.getCurrentGame()?.ci.mute();
+    // gameBoy.getCurrentGame()?.ci.mute();
   }
 
   gui.show(Debug.enabled());
