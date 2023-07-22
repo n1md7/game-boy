@@ -1,6 +1,6 @@
 # Game boy
 
-![image](https://github.com/n1md7/game-boy/assets/6734058/8bcf0a92-49f4-4a37-9667-5d75f5a0e2ce)
+![image](https://github.com/n1md7/game-boy/assets/6734058/fbc88e9e-bc1d-4c7c-a980-04b4328ee190)
 
 
 
