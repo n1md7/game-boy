@@ -39,8 +39,18 @@ const aIMAGE = new MyTextureLoader();
     gameBoy.scene.position.set(0, 1, i++);
     // gameBoy.scene.scale.set(0.25, 0.25, 0.25);
     scene.add(gameBoy.scene);
-    await gameBoy.runGame();
+    setTimeout(() => gameBoy.runGame(), 4000);
     // gameBoy.getCurrentGame()?.ci.mute();
+
+    // Write "Find Cartridges" text in the middle of the screen
+    gameBoy.screen.context.font = '24px sans-serif';
+    gameBoy.screen.context.fillStyle = 'white';
+    gameBoy.screen.context.textAlign = 'center';
+    gameBoy.screen.context.textBaseline = 'middle';
+
+    const { width, height } = gameBoy.screen.size;
+    const text = 'Find Cartridges to play';
+    gameBoy.screen.context.fillText(text, width / 2, height / 2);
   }
 
   gui.show(Debug.enabled());
@@ -51,6 +61,7 @@ const aIMAGE = new MyTextureLoader();
   world.fromGraphNode(ducky.scene);
 
   ducky.scene.position.set(0, 2, 0);
+  ducky.scene.rotation.y = -Math.PI / 2;
   ducky.scene.scale.multiplyScalar(0.25);
 
   scene.add(ducky.scene);
