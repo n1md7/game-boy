@@ -32,7 +32,7 @@ export const manager = new LoadingManager(
     assetLoaderView.appendChild(button);
   },
   (item, loaded, total) => {
-    console.log(`INFO: Loading asset "${item}"`);
+    console.log(`INFO: Loading asset "${item.slice(0, Math.min(128, item.length))}"`);
     updateProgress((loaded / total) * 100);
   },
   (error) => {
