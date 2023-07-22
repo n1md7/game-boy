@@ -6,7 +6,7 @@ canvas {
 }
 
 body {
-  background-color: rgba(37, 33, 33, 0.89);
+  background-color: rgba(0, 0, 0, 0.73);
   overflow: hidden;
 }
 
@@ -15,7 +15,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #2a1a1a;
+  color: rgba(0, 0, 0, 0.76);
   font-size: 2rem;
   font-family: sans-serif;
 }

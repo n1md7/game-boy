@@ -1,3 +1,5 @@
+import '@/src/styles/style.css';
+
 import { MyGLTFLoader, MyTextureLoader } from '@/src/setup/utils/Loader';
 import { Performance } from '@/src/setup/utils/Performance';
 import { WindowUtils } from '@/src/setup/utils/window.utils';
@@ -6,14 +8,11 @@ import { Timestamp } from '@/src/setup/utils/Timestamp';
 import { Renderer, Camera, Scene } from '@/src/setup';
 import { Player } from '@/src/first-person/Player';
 import { Debug } from '@/src/setup/utils/common';
-
-emulators.pathPrefix = './js-dos/';
-
+import { GameBoy, Cartridge } from '@/src/game-boy/GameBoy';
 import { Clock } from 'three';
 import GUI from 'lil-gui';
 
-import '@/src/styles/style.css';
-import { GameBoy, Cartridge } from '@/src/game-boy/GameBoy';
+emulators.pathPrefix = './js-dos/';
 
 const aGLTF = new MyGLTFLoader();
 const aIMAGE = new MyTextureLoader();
