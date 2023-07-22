@@ -1,8 +1,11 @@
 import { CommandInterface } from 'emulators';
 import { Screen } from '@/src/game-boy/components/Screen';
+import { Cartridges } from '@/src/game-boy/enums/Cartridge';
 
 export abstract class Game {
-  protected abstract name: string;
+  public abstract readonly name: Cartridges;
+  public abstract readonly description: string;
+
   protected readonly rootPath = import.meta.env.GAME_BASE_URL || '.';
 
   protected commandInterface!: CommandInterface;
@@ -47,7 +50,7 @@ export abstract class Game {
   }
 
   public async stop() {
-    await this.commandInterface.exit();
+    await this.commandInterface?.exit();
     this.unsubscribeUserInputs();
   }
 

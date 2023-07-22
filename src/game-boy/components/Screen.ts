@@ -3,7 +3,7 @@ import { CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 export class Screen extends Mesh {
   private readonly texture: CanvasTexture;
   private readonly canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
+  private readonly context: CanvasRenderingContext2D;
 
   constructor(width: number, height: number) {
     super();

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Gameboy Cartridge lowpoly
+* source:	https://sketchfab.com/3d-models/gameboy-cartridge-lowpoly-8b9728eab16c4056ac2636ae7f0f038f
+* author:	Bob (https://sketchfab.com/MeBob)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Gameboy Cartridge lowpoly" (https://sketchfab.com/3d-models/gameboy-cartridge-lowpoly-8b9728eab16c4056ac2636ae7f0f038f) by Bob (https://sketchfab.com/MeBob) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

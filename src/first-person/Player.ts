@@ -29,6 +29,10 @@ export class Player {
     this.playerBody.translate(new Vector3(0, 2, 4));
   }
 
+  get capsule() {
+    return this.playerBody;
+  }
+
   subscribe() {
     this.inputController.subscribe();
     this.mouseController.subscribe();
