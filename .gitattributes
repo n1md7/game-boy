@@ -1,1 +1,5 @@
-public linguist-detectable=false
+public/js-dos/* linguist-detectable=false
+public/3d/* linguist-detectable=false
+public/fonts/* linguist-detectable=false
+public/images/* linguist-detectable=false
+public/games/* linguist-detectable=false
