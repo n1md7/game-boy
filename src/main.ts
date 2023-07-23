@@ -25,8 +25,8 @@ const aIMAGE = new MyTextureLoader();
   const [groundTexture, skyGLTF, gameBoyGLTF, cartridgeGLTF] = await Promise.all([
     aIMAGE.load('images/checker.png'),
     aGLTF.load('3d/sky-pano/scene.gltf'),
-    aGLTF.load('3d/game-boy/scene.gltf'),
-    aGLTF.load('3d/game-boy-cartridge/scene.gltf'),
+    aGLTF.load('3d/game-boy/model/scene.gltf'),
+    aGLTF.load('3d/game-boy/cartridge/scene.gltf'),
   ]);
 
   const gui = new GUI();
