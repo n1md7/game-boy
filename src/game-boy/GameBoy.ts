@@ -4,6 +4,7 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { delay } from '@/src/setup/utils/common';
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 import { Group } from 'three';
+import { applyGui, gui } from '@/src/setup/utils/gui';
 
 export class GameBoy {
   public readonly screen: Screen;
@@ -19,11 +20,12 @@ export class GameBoy {
     this.scene.add(model.scene.clone(), this.screen);
     // No cartridge inserted, no game to play.
     this.screen.write('Insert cartridge to play.');
+    applyGui(gui.addFolder('GameBoy'), this.scene);
   }
 
   async insertCartridge(cartridge: Cartridge): Promise<Game> {
-    // Unsubscribe from the previous game if there was one.
-    this.cartridge?.game?.stop();
+    if (this.cartridge) throw 'You need to remove the current cartridge first.';
+
     this.screen.write(`Initializing ${cartridge.name}...`);
     // Cartridge inserted, game is ready to play.
     this.cartridge = cartridge;
@@ -36,8 +38,14 @@ export class GameBoy {
     // When frames are received, the screen text is cleared.
     await this.cartridge.game.run();
 
-    this.cartridge.game.ci.mute();
+    // this.cartridge.game.ci.mute();
 
     return this.cartridge.game;
+  }
+
+  removeCartridge() {
+    this.cartridge?.game?.stop();
+    this.screen.write('Insert cartridge to play.');
+    this.cartridge = undefined;
   }
 }

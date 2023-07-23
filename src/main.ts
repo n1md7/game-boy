@@ -9,12 +9,12 @@ import { Renderer, Camera, Scene } from '@/src/setup';
 import { Player } from '@/src/first-person/Player';
 import { Debug } from '@/src/setup/utils/common';
 import { GameBoy } from '@/src/game-boy/GameBoy';
-import { Clock } from 'three';
+import { Clock, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 import { MarioCartridge } from '@/src/game-boy/cartridges/MarioCartridge';
 import { DoomCartridge } from '@/src/game-boy/cartridges/DoomCartridge';
 import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
-import { gui } from '@/src/setup/utils/gui';
+import { applyGui, gui } from '@/src/setup/utils/gui';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 
 emulators.pathPrefix = './js-dos/';
@@ -23,21 +23,20 @@ const aGLTF = new MyGLTFLoader();
 const aIMAGE = new MyTextureLoader();
 
 (async function setup() {
-  const [images, skyGLTF, gameBoyGLTF, cartridgeGLTF] = await Promise.all([
+  const [images, gameBoyGLTF, cartridgeGLTF, roomMapGLTF] = await Promise.all([
     Promise.all([
-      aIMAGE.load('images/checker.png'),
       aIMAGE.load('images/cartridges/Doom.jpeg'),
       aIMAGE.load('images/cartridges/Duke.jpeg'),
       aIMAGE.load('images/cartridges/Digger.jpeg'),
       aIMAGE.load('images/cartridges/Quake.jpeg'),
       aIMAGE.load('images/cartridges/Mario.jpeg'),
     ]),
-    aGLTF.load('3d/sky-pano/scene.gltf'),
     aGLTF.load('3d/game-boy/model/scene.gltf'),
     aGLTF.load('3d/game-boy/cartridge/scene.gltf'),
+    aGLTF.load('3d/maps/room/scene.gltf'),
   ]);
 
-  const { 0: groundTexture, 1: DoomTexture, 2: DukeTexture, 3: DiggerTexture, 4: QuakeTexture, 5: MarioTexture } = images;
+  const { 0: DoomTexture, 1: DukeTexture, 2: DiggerTexture, 3: QuakeTexture, 4: MarioTexture } = images;
 
   const world = new Octree();
   const renderer = new Renderer();
@@ -53,24 +52,40 @@ const aIMAGE = new MyTextureLoader();
   const cartridges = [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge];
 
   const gameBoy = new GameBoy(gameBoyGLTF);
-  gameBoy.scene.position.set(0, 1, 0);
+  gameBoy.scene.position.set(4.3, 1, 1);
+  gameBoy.scene.rotation.set(0, -Math.PI / 2, 0);
   // gameBoy.scene.scale.set(0.25, 0.25, 0.25);
 
-  // Create a transparent sphere
-
-  diggerCartridge.scene.position.set(1.5, 0.5, 2.5);
-  marioCartridge.scene.position.set(2.5, 0.5, 5.0);
-  doomCartridge.scene.position.set(-1.5, 0.5, 2.5);
-  quakeCartridge.scene.position.set(-2.5, 0.5, 5.0);
-  dukeCartridge.scene.position.set(0, 0.5, 5.0);
+  quakeCartridge.scene.position.set(3.477, 0.763, -1.134);
+  diggerCartridge.scene.position.set(-0.916, 1.603, 3.562);
+  marioCartridge.scene.position.set(-0.636, 0.5, -1.476);
+  doomCartridge.scene.position.set(-0.916, 1.603, -0.7);
+  dukeCartridge.scene.position.set(0.763, 1.323, 5.801);
 
   scene.add(gameBoy.scene, ...cartridges.map((cartridge) => cartridge.scene));
 
-  gui.show(Debug.enabled());
-
   const player = new Player(camera, world);
 
-  scene.addLight().addGround(groundTexture).addSky(skyGLTF).addFog();
+  scene.add(roomMapGLTF.scene);
+
+  roomMapGLTF.scene.position.set(0, 0, 2);
+  roomMapGLTF.scene.scale.multiplyScalar(0.035);
+
+  const wall = new Mesh(
+    new PlaneGeometry(100, 100),
+    new MeshBasicMaterial({
+      color: 'rgba(152,151,151,0.69)',
+    })
+  );
+  wall.position.set(131, 57.178, -11.926);
+  wall.rotation.set(0, -Math.PI / 2, 0);
+  wall.scale.set(2.111, 1.244, 0);
+  roomMapGLTF.scene.add(wall);
+  applyGui(gui.addFolder('Wall'), wall);
+
+  world.fromGraphNode(roomMapGLTF.scene);
+
+  scene.addLight();
 
   {
     const FPS = 60;
@@ -97,6 +112,7 @@ const aIMAGE = new MyTextureLoader();
 
           if (player.capsule.intersectsBox(cartridge.toBox3())) {
             cartridge.scene.visible = false;
+            gameBoy.removeCartridge();
             gameBoy.insertCartridge(cartridge);
           }
 

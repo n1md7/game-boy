@@ -17,7 +17,7 @@ export class MouseController extends EventTarget {
 
   private mouseMoveHandler({ movementY, movementX }: MouseEvent) {
     // INFO: only updates camera rotation if pointer is locked
-    // if (document.pointerLockElement !== document.body) return;
+    if (document.pointerLockElement !== document.body) return;
 
     this.camera.rotation.y -= movementX * this.mouseSensitivity;
     this.camera.rotation.x -= movementY * this.mouseSensitivity;

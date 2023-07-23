@@ -1,0 +1,11 @@
+Model Information:
+* title:	Waiting Room with Baked Textures
+* source:	https://sketchfab.com/3d-models/waiting-room-with-baked-textures-9e837505865a4df393ede1426a0fe878
+* author:	jimbogies (https://sketchfab.com/jimbogies)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Waiting Room with Baked Textures" (https://sketchfab.com/3d-models/waiting-room-with-baked-textures-9e837505865a4df393ede1426a0fe878) by jimbogies (https://sketchfab.com/jimbogies) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -54,6 +54,9 @@ export class InputController extends EventTarget {
       case 'KeyR':
         this.dispatchEvent(new Event('weapon:reload'));
         break;
+      case 'Space':
+        this.isSpacePressed = true;
+        break;
       case 'Digit1':
       case 'Digit2':
       case 'Digit3':

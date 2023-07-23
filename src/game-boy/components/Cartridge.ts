@@ -1,9 +1,9 @@
 import { Game } from '@/src/game-boy/abstract/Game';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
-import { SphereGeometry, AxesHelper, PointLight, Box3 } from 'three';
+import { SphereGeometry, AxesHelper, Box3 } from 'three';
 import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { gui } from '@/src/setup/utils/gui';
+import { applyGui, gui } from '@/src/setup/utils/gui';
 
 export abstract class Cartridge {
   static DEBUG = false;
@@ -16,7 +16,6 @@ export abstract class Cartridge {
 
   private readonly model: Group;
   private readonly sphere: Mesh;
-  private readonly light: PointLight;
 
   protected constructor(model: GLTF, game: Game) {
     this.game = game;
@@ -35,15 +34,16 @@ export abstract class Cartridge {
       new MeshBasicMaterial({
         color: '#ffff00',
         transparent: true,
-        opacity: 0.02,
+        opacity: 0.12,
       })
     );
     this.sphere.position.set(0, 0, 0);
 
     // Setup light of cartridge
-    this.light = new PointLight(0xffffff, 0.35, 1, 1);
-    this.light.position.set(0, 0.5, 0.3);
-    this.light.lookAt(this.model.position);
+    // this.light = new PointLight(0xffffff, 0.35, 1, 1);
+    // this.light.position.set(0, 0.5, 0.3);
+    // this.light.lookAt(this.model.position);
+    // this.scene.add(this.light);
 
     // Setup poster image of cartridge
     this.image = new Mesh(
@@ -61,22 +61,17 @@ export abstract class Cartridge {
     Cartridge.DEBUG && this.scene.add(new AxesHelper(0.5));
     Cartridge.DEBUG && this.attachGui();
 
-    this.scene.add(this.model, this.sphere, this.light);
+    this.scene.add(this.model, this.sphere);
   }
 
   private attachGui() {
-    const posterGui = gui.addFolder(`${this.name} Poster`);
-    posterGui.add(this.image.position, 'x', -0.5, 0.5, 0.001).name('PosX');
-    posterGui.add(this.image.position, 'y', -0.5, 0.5, 0.001).name('PosY');
-    posterGui.add(this.image.position, 'z', -0.5, 0.5, 0.001).name('PosZ');
-    posterGui.add(this.image.rotation, 'x', -Math.PI, Math.PI, 0.01).name('RotX');
-    posterGui.add(this.image.rotation, 'y', -Math.PI, Math.PI, 0.01).name('RotY');
-    posterGui.add(this.image.rotation, 'z', -Math.PI, Math.PI, 0.01).name('RotZ');
-    posterGui.add(this.image.scale, 'x', 0.1, 4, 0.01).name('ScaleX');
-    posterGui.add(this.image.scale, 'y', 0.1, 4, 0.01).name('ScaleY');
-    posterGui.add(this.image.scale, 'z', 0.1, 4, 0.01).name('ScaleZ');
-
-    posterGui.close();
+    const cartridge = gui.addFolder(`${this.name} Cartridge`);
+    const group = cartridge.addFolder(`Group`);
+    const model = group.addFolder(`Model`);
+    const image = group.addFolder(`Image`);
+    applyGui(group, this.scene);
+    applyGui(model, this.model);
+    applyGui(image, this.image);
   }
 
   update(time: number) {

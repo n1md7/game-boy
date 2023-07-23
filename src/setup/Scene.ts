@@ -1,18 +1,17 @@
 import { GUI } from 'lil-gui';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { AxesHelper, GridHelper, RectAreaLight } from 'three';
+import { AmbientLight, AxesHelper, GridHelper } from 'three';
 import { Texture } from 'three';
 import { Scene as ThreeScene, Color, Fog } from 'three';
 import { Ground } from '@/src/setup/scene/components/Ground';
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 
 export default class Scene extends ThreeScene {
   constructor(
     private readonly gui: GUI,
     private readonly world: Octree,
-    private readonly width = 100,
-    private readonly depth = 100
+    private readonly width = 10,
+    private readonly depth = 10
   ) {
     super();
 
@@ -38,10 +37,9 @@ export default class Scene extends ThreeScene {
   }
 
   addLight() {
-    const light = new RectAreaLight('#FFFFFF', 3, 2, 2);
-    light.position.set(0, 3.5, 2);
-    this.add(light, new RectAreaLightHelper(light, 0xffffff));
-    light.lookAt(0, 0, 0);
+    const light = new AmbientLight('#FFFFFF', 1);
+    light.position.set(-3, 3.0, 2);
+    this.add(light);
 
     const gui = this.gui.addFolder('Light');
     gui.add(light, 'intensity', 0, 20, 0.01);
