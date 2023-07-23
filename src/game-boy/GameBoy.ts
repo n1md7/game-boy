@@ -17,22 +17,23 @@ export class GameBoy {
     this.screen.position.set(0, 0.43, 0.2);
 
     this.scene.add(model.scene.clone(), this.screen);
-
+    // No cartridge inserted, no game to play.
     this.screen.write('Insert cartridge to play.');
   }
 
   async insertCartridge(cartridge: Cartridge): Promise<Game> {
-    // Unsubscribe from the previous game.
+    // Unsubscribe from the previous game if there was one.
     this.cartridge?.game?.stop();
-    this.screen.write(`[${cartridge.name}] Loading...`);
-    // Current game after Cartridge inserted.
+    this.screen.write(`Initializing ${cartridge.name}...`);
+    // Cartridge inserted, game is ready to play.
     this.cartridge = cartridge;
     // If the game loads too fast we still delay it for 3 seconds 😈.
     // Just to keep it more realistic.
     await Promise.all([this.cartridge.game.load(), delay(3000)]);
 
-    // HDMI or TYPE-C both work.🙂
+    // HDMI or TYPE-C both work here.🙂
     this.cartridge.game.connect(this.screen);
+    // When frames are received, the screen text is cleared.
     await this.cartridge.game.run();
 
     // this.cartridge.game.ci.mute();
