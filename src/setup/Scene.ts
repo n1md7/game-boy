@@ -5,7 +5,6 @@ import { AxesHelper, GridHelper, RectAreaLight } from 'three';
 import { Texture } from 'three';
 import { Scene as ThreeScene, Color, Fog } from 'three';
 import { Ground } from '@/src/setup/scene/components/Ground';
-import { Box } from '@/src/setup/scene/components/Box';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 
 export default class Scene extends ThreeScene {
@@ -62,21 +61,6 @@ export default class Scene extends ThreeScene {
   addSky(sky: GLTF) {
     sky.scene.scale.set(100, 100, 100);
     this.add(sky.scene);
-
-    return this;
-  }
-
-  addBoxes(texture: Texture, count = 16) {
-    const map = texture.clone();
-
-    for (const _ of Array(count).keys()) {
-      const box = new Box(map);
-      box.position.set(Math.random() * this.width - this.width / 2, 0.5, Math.random() * this.depth - this.depth / 2);
-      box.castShadow = true;
-      box.receiveShadow = true;
-      this.world.fromGraphNode(box);
-      this.add(box);
-    }
 
     return this;
   }

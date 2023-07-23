@@ -1,8 +1,7 @@
 import { DoubleSide, Mesh, MeshStandardMaterial, PlaneGeometry, RepeatWrapping, Texture } from 'three';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
-import { RigidBody } from '@/src/abstract/RigidBody';
 
-export class Ground extends RigidBody {
+export class Ground extends Mesh {
   constructor(readonly texture: Texture, readonly world: Octree, readonly width = 100, readonly depth = 100) {
     super();
 
