@@ -79,7 +79,8 @@ export abstract class Game {
   }
 
   private onFrame(rgb: Uint8Array | null) {
-    for (let next = 0; next < 320 * 200; ++next) {
+    const pixels = this.screen.size.width * this.screen.size.height;
+    for (let next = 0; next < pixels; ++next) {
       if (!rgb) continue;
       this.rgba[next * 4 + 0] = rgb[next * 3 + 0];
       this.rgba[next * 4 + 1] = rgb[next * 3 + 1];
