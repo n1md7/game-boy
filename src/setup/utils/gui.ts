@@ -3,13 +3,17 @@ import { Debug } from '@/src/setup/utils/common';
 import { Euler, Group, Mesh, Vector3 } from 'three';
 
 export const gui = new GUI();
+const screen = gui.addFolder('Screen');
+const pointerLock = () => document.body.requestPointerLock();
+screen.add({ pointerLock }, 'pointerLock').name('Pointer Lock');
+
 gui.show(Debug.enabled());
 
 export const applyPosition = (gui: GUI, object: Vector3) => {
   const folder = gui.addFolder('Position');
-  folder.add(object, 'x', -140, 140, 0.001);
-  folder.add(object, 'y', -140, 140, 0.001);
-  folder.add(object, 'z', -140, 140, 0.001);
+  folder.add(object, 'x', -10, 10, 0.001);
+  folder.add(object, 'y', -10, 10, 0.001);
+  folder.add(object, 'z', -10, 10, 0.001);
   folder.close();
 };
 

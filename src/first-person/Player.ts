@@ -18,8 +18,8 @@ export class Player {
   private playerIsGrounded = false;
 
   constructor(private readonly camera: Camera, private readonly world: Octree) {
-    const start = new Vector3(0, 0.35, 0);
-    const end = new Vector3(0, 1, 0);
+    const start = new Vector3(0, 1, 0);
+    const end = new Vector3(0, 1.75, 0);
     this.playerBody = new Capsule(start, end, 0.35);
     this.playerVelocity = new Vector3();
     this.inputController = new InputController();
