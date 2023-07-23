@@ -1,6 +1,7 @@
 import { CommandInterface } from 'emulators';
 import { Screen } from '@/src/game-boy/components/Screen';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
+import { Texture } from 'three';
 
 export abstract class Game {
   public abstract readonly name: Cartridges;
@@ -14,7 +15,7 @@ export abstract class Game {
   private rgba!: Uint8ClampedArray;
   private bundle!: Uint8Array;
 
-  public constructor() {
+  public constructor(public readonly image: Texture) {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFrame = this.onFrame.bind(this);

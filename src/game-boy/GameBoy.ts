@@ -36,7 +36,7 @@ export class GameBoy {
     // When frames are received, the screen text is cleared.
     await this.cartridge.game.run();
 
-    // this.cartridge.game.ci.mute();
+    this.cartridge.game.ci.mute();
 
     return this.cartridge.game;
   }

@@ -1,7 +1,6 @@
-import { RigidBody } from '@/src/abstract/RigidBody';
-import { BoxGeometry, MeshStandardMaterial, Texture } from 'three';
+import { BoxGeometry, Mesh, MeshStandardMaterial, Texture } from 'three';
 
-export class Box extends RigidBody {
+export class Box extends Mesh {
   constructor(map: Texture) {
     super();
 
