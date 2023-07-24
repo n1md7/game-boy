@@ -1,5 +1,7 @@
 import { CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 
+type MirroringMode = 'Built-in' | 'Mirror' | 'External';
+
 export abstract class GenericScreen {
   protected readonly context: CanvasRenderingContext2D;
   protected readonly canvas: HTMLCanvasElement;
@@ -9,6 +11,8 @@ export abstract class GenericScreen {
   // Supported interfaces 😬
   private HDMI?: GenericScreen;
   private TypeC?: GenericScreen;
+
+  private mirroring: MirroringMode = 'Built-in';
 
   protected constructor(width: number, height: number) {
     this.canvas = document.createElement('canvas');
@@ -35,11 +39,23 @@ export abstract class GenericScreen {
     };
   }
 
+  set mirroringMode(mode: MirroringMode) {
+    this.mirroring = mode;
+  }
+
   putImageData(imageData: ImageData) {
-    const dx = (this.size.width - imageData.width) / 2;
-    const dy = (this.size.height - imageData.height) / 2;
-    this.context.putImageData(imageData, dx, dy);
-    this.needsUpdate();
+    if (['Mirror', 'Built-in'].includes(this.mirroring)) {
+      const dx = (this.size.width - imageData.width) / 2;
+      const dy = (this.size.height - imageData.height) / 2;
+      this.context.putImageData(imageData, dx, dy);
+      this.needsUpdate();
+    }
+
+    if (this.mirroring === 'Built-in') {
+      if (this.HDMI) this.HDMI.displayNoSignal();
+      if (this.TypeC) this.TypeC.displayNoSignal();
+      return;
+    }
 
     if (this.HDMI) this.HDMI.putImageData(imageData);
     if (this.TypeC) this.TypeC.putImageData(imageData);
@@ -50,9 +66,17 @@ export abstract class GenericScreen {
   }
 
   write(text: string) {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.fillText(text, this.size.width / 2, this.size.height / 2);
-    this.needsUpdate();
+    if (['Mirror', 'Built-in'].includes(this.mirroring)) {
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.context.fillText(text, this.size.width / 2, this.size.height / 2);
+      this.needsUpdate();
+    }
+
+    if (this.mirroring === 'Built-in') {
+      if (this.HDMI) this.HDMI.displayNoSignal();
+      if (this.TypeC) this.TypeC.displayNoSignal();
+      return;
+    }
 
     if (this.HDMI) this.HDMI.write(text);
     if (this.TypeC) this.TypeC.write(text);
@@ -64,6 +88,10 @@ export abstract class GenericScreen {
 
   connectViaTypeC(screen: GenericScreen) {
     this.TypeC = screen;
+  }
+
+  displayNoSignal() {
+    this.write('No Signal! Please check connection.');
   }
 
   protected setTextFormat(): void {

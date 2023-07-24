@@ -16,7 +16,8 @@ export const AssetsLoaded = Promise.all([
   GLTFLoader.load('3d/game-boy/model/scene.gltf'),
   GLTFLoader.load('3d/game-boy/cartridge/scene.gltf'),
   GLTFLoader.load('3d/maps/room/scene.gltf'),
-  GLTFLoader.load('3d/projector/scene.gltf'),
+  GLTFLoader.load('3d/projector/screen/scene.gltf'),
+  GLTFLoader.load('3d/projector/device/scene.gltf'),
 ]);
 
 export const Assets = {
@@ -28,7 +29,8 @@ export const Assets = {
   GameBoy: {} as GLTF,
   Cartridge: {} as GLTF,
   Room: {} as GLTF,
-  Projector: {} as GLTF,
+  ProjectorScreen: {} as GLTF,
+  ProjectorDevice: {} as GLTF,
 };
 
 export const extractAssets = (assets: Awaited<typeof AssetsLoaded>) => {
@@ -37,7 +39,8 @@ export const extractAssets = (assets: Awaited<typeof AssetsLoaded>) => {
     1: GameBoy,
     2: Cartridge,
     3: Room,
-    4: Projector,
+    4: ProjectorScreen,
+    5: ProjectorDevice,
   } = assets;
 
   Assets.Doom = Doom;
@@ -48,5 +51,6 @@ export const extractAssets = (assets: Awaited<typeof AssetsLoaded>) => {
   Assets.GameBoy = GameBoy;
   Assets.Cartridge = Cartridge;
   Assets.Room = Room;
-  Assets.Projector = Projector;
+  Assets.ProjectorScreen = ProjectorScreen;
+  Assets.ProjectorDevice = ProjectorDevice;
 };

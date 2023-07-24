@@ -19,6 +19,7 @@ export abstract class Game {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFrame = this.onFrame.bind(this);
+    emulators.pathPrefix = './js-dos/';
   }
 
   public get ci() {

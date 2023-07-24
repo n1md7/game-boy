@@ -16,8 +16,6 @@ import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { Assets, AssetsLoaded, extractAssets } from '@/src/assets';
 
-emulators.pathPrefix = './js-dos/';
-
 AssetsLoaded.then(extractAssets).then(setup).catch(console.error);
 
 function setup() {
@@ -79,8 +77,9 @@ function setup() {
             player.pickUpCartridge(cartridge);
             cartridge.scene.visible = false;
             gameBoy.removeCartridge();
+            gameBoy.connectExternalDisplay(scene.projectorScreen);
+            gameBoy.mirrorMode.showBoth();
             gameBoy.insertCartridge(cartridge);
-            gameBoy.mirrorDisplayToProjector(scene.projectorScreen);
             player.disable();
           }
 

@@ -1,8 +1,9 @@
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { AmbientLight, AxesHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
+import { AmbientLight, AxesHelper, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry } from 'three';
 import { Scene as ThreeScene, Color } from 'three';
 import { gui } from '@/src/setup/utils/gui';
 import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
+import { Assets } from '@/src/assets';
 
 export default class Scene extends ThreeScene {
   readonly light!: AmbientLight;
@@ -30,6 +31,17 @@ export default class Scene extends ThreeScene {
 
     room.scene.add(this.projectorScreen.scene);
     room.scene.add(wall);
+
+    const projector = Assets.ProjectorDevice.scene.clone();
+    projector.position.set(26, 80, -15.397);
+    projector.rotation.set(0, Math.PI * 0.5, 0);
+    projector.scale.multiplyScalar(2);
+    projector.traverse((child) => {
+      if (child instanceof Mesh) {
+        child.material = new MeshStandardMaterial({ map: Assets.Duke });
+      }
+    });
+    room.scene.add(projector);
 
     this.room.add(new AxesHelper(200));
 
