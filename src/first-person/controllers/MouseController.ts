@@ -9,10 +9,12 @@ export class MouseController extends EventTarget {
 
   subscribe() {
     document.addEventListener('mousemove', this.mouseMoveHandler.bind(this));
+    document.addEventListener('pointerlockchange', this.pointerLockHandler.bind(this));
   }
 
   unsubscribe() {
     document.removeEventListener('mousemove', this.mouseMoveHandler.bind(this));
+    document.removeEventListener('pointerlockchange', this.pointerLockHandler.bind(this));
   }
 
   private mouseMoveHandler({ movementY, movementX }: MouseEvent) {
@@ -24,5 +26,13 @@ export class MouseController extends EventTarget {
 
     // INFO: clamp camera rotation on X axis
     this.camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.camera.rotation.x));
+  }
+
+  private pointerLockHandler() {
+    if (document.pointerLockElement === document.body) {
+      this.dispatchEvent(new Event('PointerLock:enabled'));
+    } else {
+      this.dispatchEvent(new Event('PointerLock:disabled'));
+    }
   }
 }

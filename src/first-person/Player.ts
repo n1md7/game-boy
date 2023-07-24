@@ -20,6 +20,7 @@ export class Player {
 
   private readonly cartridges: Cartridge[] = [];
 
+  private playerIsDisabled = false;
   private playerIsGrounded = false;
 
   constructor(private readonly camera: Camera, private readonly world: Octree) {
@@ -33,6 +34,14 @@ export class Player {
 
     // Starting position
     this.playerBody.translate(new Vector3(0, 2, 4));
+  }
+
+  enable() {
+    this.playerIsDisabled = false;
+  }
+
+  disable() {
+    this.playerIsDisabled = true;
   }
 
   get capsule() {
@@ -49,6 +58,7 @@ export class Player {
 
     this.mouseController.addEventListener('mouse:click-start', () => null);
     this.mouseController.addEventListener('mouse:click-end', () => null);
+    this.mouseController.addEventListener('PointerLock:disabled', () => this.enable());
   }
 
   reset() {
@@ -57,6 +67,8 @@ export class Player {
   }
 
   update(delta: number) {
+    if (this.playerIsDisabled) return;
+
     const deltaTime = Math.min(0.05, delta) / this.STEPS_PER_FRAME;
 
     // INFO: To enhance collision detection accuracy,

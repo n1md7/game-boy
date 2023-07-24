@@ -81,6 +81,7 @@ function setup() {
             gameBoy.removeCartridge();
             gameBoy.insertCartridge(cartridge);
             gameBoy.mirrorDisplayToProjector(scene.projectorScreen);
+            player.disable();
           }
 
           cartridge.update(time);
