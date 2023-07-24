@@ -26,7 +26,7 @@ export class ProjectorDisplay extends GenericGUI {
 
     this.screen.scene.position.set(-0.01, 68.589, -0.01);
     this.screen.scene.rotation.set(0, -Math.PI / 2, 0);
-    this.screen.scene.scale.set(110, 78, 1);
+    this.screen.scene.scale.multiplyScalar(110);
     this.screen.write('No Signal! Please check your HDMI or Type-C connection');
 
     this.applyTransformationGUI(this.group);

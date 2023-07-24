@@ -5,7 +5,6 @@ export abstract class GenericScreen {
   protected readonly canvas: HTMLCanvasElement;
   private readonly texture: CanvasTexture;
   private readonly mesh: Mesh;
-  protected readonly background: Mesh;
 
   // Supported interfaces 😬
   private HDMI?: GenericScreen;
@@ -22,10 +21,6 @@ export abstract class GenericScreen {
     this.mesh.geometry = new PlaneGeometry(1, height / width);
     this.mesh.material = new MeshBasicMaterial({ map: this.texture });
 
-    this.background = new Mesh(new PlaneGeometry(1, 0.764), new MeshBasicMaterial({ color: 0x000000 }));
-    this.background.position.set(0, 0, -0.001);
-    this.mesh.add(this.background);
-
     this.setTextFormat();
   }
 
@@ -41,9 +36,9 @@ export abstract class GenericScreen {
   }
 
   putImageData(imageData: ImageData) {
-    const dx = this.size.width - imageData.width;
-    const dy = this.size.height - imageData.height;
-    this.context.putImageData(imageData, dx / 2, dy / 2);
+    const dx = (this.size.width - imageData.width) / 2;
+    const dy = (this.size.height - imageData.height) / 2;
+    this.context.putImageData(imageData, dx, dy);
     this.needsUpdate();
 
     if (this.HDMI) this.HDMI.putImageData(imageData);
