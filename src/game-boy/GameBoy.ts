@@ -3,7 +3,6 @@ import { Game } from '@/src/game-boy/abstract/Game';
 import { delay } from '@/src/setup/utils/common';
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 import { Group } from 'three';
-import { applyGui, gui } from '@/src/setup/utils/gui';
 import { Assets } from '@/src/assets';
 import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
 

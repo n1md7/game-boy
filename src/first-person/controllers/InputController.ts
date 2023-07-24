@@ -17,15 +17,12 @@ export class InputController extends EventTarget {
     document.removeEventListener('keyup', this.onKeyUp.bind(this));
   }
 
-  public get says() {
+  public get actions() {
     return {
-      move: {
-        forward: this.moveForward,
-        backward: this.moveBackward,
-        left: this.moveLeft,
-        right: this.moveRight,
-        anyDirection: this.moveForward || this.moveBackward || this.moveLeft || this.moveRight,
-      },
+      goForward: this.moveForward,
+      goBackward: this.moveBackward,
+      goLeft: this.moveLeft,
+      goRight: this.moveRight,
       sprint: this.isShiftPressed,
       jump: this.isSpacePressed,
     };

@@ -1,85 +1,89 @@
 import { Vector3 } from 'three';
+import { Camera } from '@/src/setup';
 import { Capsule } from 'three/examples/jsm/math/Capsule';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
-import { InputController } from '@/src/first-person/controllers/InputController';
-import { MouseController } from '@/src/first-person/controllers/MouseController';
-import { Camera } from '@/src/setup';
-import { Cartridge } from '@/src/game-boy/components/Cartridge';
-import { GameBoyController } from '@/src/game-boy/controllers/GameBoyController';
+
+type Action = {
+  goLeft: boolean;
+  goRight: boolean;
+  goForward: boolean;
+  goBackward: boolean;
+  jump: boolean;
+  sprint: boolean;
+};
 
 export class Player {
-  private readonly GRAVITY = 30;
-  private readonly STEPS_PER_FRAME = 16;
-  private readonly playerJumpVelocity = 10;
+  private readonly gravity = 30;
+  private readonly steps = 16; // Steps per frame
+  private readonly jumpVelocity = 10;
 
-  private readonly playerBody: Capsule;
-  private readonly playerVelocity: Vector3;
-  private readonly inputController: InputController;
-  private readonly mouseController: MouseController;
-  private readonly gameBoyController: GameBoyController;
+  private readonly body: Capsule;
+  private readonly velocity: Vector3;
 
-  private readonly cartridges: Cartridge[] = [];
-
-  private playerIsDisabled = false;
-  private playerIsGrounded = false;
+  private isGrounded = false;
 
   constructor(private readonly camera: Camera, private readonly world: Octree) {
     const start = new Vector3(0, 1, 0);
     const end = new Vector3(0, 1.75, 0);
-    this.playerBody = new Capsule(start, end, 0.35);
-    this.playerVelocity = new Vector3();
-    this.inputController = new InputController();
-    this.mouseController = new MouseController(camera);
-    this.gameBoyController = new GameBoyController(camera);
+    this.body = new Capsule(start, end, 0.35);
+    this.velocity = new Vector3(0);
+
+    this.updatePlayer = this.updatePlayer.bind(this);
 
     // Starting position
-    this.playerBody.translate(new Vector3(0, 2, 4));
-  }
-
-  enable() {
-    this.playerIsDisabled = false;
-  }
-
-  disable() {
-    this.playerIsDisabled = true;
+    this.body.translate(new Vector3(0, 2, 4));
   }
 
   get capsule() {
-    return this.playerBody;
-  }
-
-  pickUpCartridge(cartridge: Cartridge) {
-    this.cartridges.push(cartridge);
-  }
-
-  subscribe() {
-    this.inputController.subscribe();
-    this.mouseController.subscribe();
-
-    this.mouseController.addEventListener('mouse:click-start', () => null);
-    this.mouseController.addEventListener('mouse:click-end', () => null);
-    this.mouseController.addEventListener('PointerLock:disabled', () => this.enable());
+    return this.body;
   }
 
   reset() {
     const center = new Vector3(0, 1, 0);
-    this.playerBody.translate(center.sub(this.playerBody.end));
+    this.body.translate(center.sub(this.body.end));
   }
 
   update(delta: number) {
-    if (this.playerIsDisabled) return;
+    // INFO: Respawn player if it falls off the map
+    if (this.body.end.y < -64) this.reset();
 
-    if (this.playerBody.end.y < -64) this.reset();
-
-    const deltaTime = Math.min(0.05, delta) / this.STEPS_PER_FRAME;
+    const deltaTime = Math.min(0.05, delta) / this.steps;
 
     // INFO: To enhance collision detection accuracy,
     // we divide the collision checking process into sub-steps.
     // This approach helps mitigate the potential issue of objects
     // passing through each other too rapidly to be detected reliably.
-    for (let i = 0; i < this.STEPS_PER_FRAME; i++) {
-      this.evaluateUserInput(deltaTime);
-      this.updatePlayer(deltaTime);
+    const frame = { steps: this.steps };
+    do this.updatePlayer(deltaTime);
+    while (--frame.steps > 0);
+  }
+
+  action(action: Action, deltaTime: number) {
+    const { goLeft, goRight, goForward, goBackward } = action;
+    const speedDelta = this.getSpeedDelta(deltaTime, action.sprint);
+
+    const forwardVector = this.getForwardVector(new Vector3());
+    const sideVector = this.getSideVector(new Vector3());
+
+    // Makes sure that diagonal movement isn't faster as it would be otherwise
+    const velocity = goLeft || goRight ? speedDelta * 0.707 : speedDelta;
+    if (goForward) {
+      // Forward movement is fastest as long as left or right aren't pressed
+      this.velocity.add(forwardVector.multiplyScalar(velocity));
+      if (goLeft) this.velocity.add(sideVector.multiplyScalar(-velocity));
+      if (goRight) this.velocity.add(sideVector.multiplyScalar(velocity));
+    } else if (goBackward) {
+      this.velocity.add(forwardVector.multiplyScalar(-velocity));
+      if (goLeft) this.velocity.add(sideVector.multiplyScalar(-velocity));
+      if (goRight) this.velocity.add(sideVector.multiplyScalar(velocity));
+    } else {
+      // Sideways movement a bit slower
+      if (goLeft) this.velocity.add(sideVector.multiplyScalar(-speedDelta * 0.9));
+      if (goRight) this.velocity.add(sideVector.multiplyScalar(speedDelta * 0.9));
+    }
+
+    if (this.isGrounded && action.jump) {
+      this.velocity.y = this.jumpVelocity;
     }
   }
 
@@ -100,74 +104,46 @@ export class Player {
     return vector;
   }
 
-  private evaluateUserInput(deltaTime: number) {
-    const { forward, backward } = this.inputController.says.move;
-    const { left, right } = this.inputController.says.move;
-    const speedDelta = this.getSpeedDelta(deltaTime);
-
-    const forwardVector = this.getForwardVector(new Vector3());
-    const sideVector = this.getSideVector(new Vector3());
-
-    // Makes sure that diagonal movement isn't faster as it would be otherwise
-    const velocity = left || right ? speedDelta * 0.707 : speedDelta;
-    if (forward) {
-      // Forward movement is fastest as long as left or right aren't pressed
-      this.playerVelocity.add(forwardVector.multiplyScalar(velocity));
-      if (left) this.playerVelocity.add(sideVector.multiplyScalar(-velocity));
-      if (right) this.playerVelocity.add(sideVector.multiplyScalar(velocity));
-    } else if (backward) {
-      this.playerVelocity.add(forwardVector.multiplyScalar(-velocity));
-      if (left) this.playerVelocity.add(sideVector.multiplyScalar(-velocity));
-      if (right) this.playerVelocity.add(sideVector.multiplyScalar(velocity));
-    } else {
-      // Sideways movement a bit slower
-      if (left) this.playerVelocity.add(sideVector.multiplyScalar(-speedDelta * 0.9));
-      if (right) this.playerVelocity.add(sideVector.multiplyScalar(speedDelta * 0.9));
-    }
-
-    if (this.playerIsGrounded && this.inputController.says.jump) {
-      this.playerVelocity.y = this.playerJumpVelocity;
-    }
-  }
-
-  private getSpeedDelta(deltaTime: number) {
+  private getSpeedDelta(deltaTime: number, sprint: boolean) {
     // INFO: Not setting to ZERO, it gives a bit of air control when jumping
-    const low = this.inputController.says.sprint ? 16 : 8;
-    const high = this.inputController.says.sprint ? 96 : 48;
+    const low = sprint ? 16 : 8;
+    const high = sprint ? 96 : 48;
 
-    return deltaTime * (this.playerIsGrounded ? high : low);
+    return deltaTime * (this.isGrounded ? high : low);
   }
 
   private updatePlayer(deltaTime: number) {
     const damping = { val: Math.exp(-8 * deltaTime) - 1 };
 
-    if (!this.playerIsGrounded) {
-      this.playerVelocity.y -= this.GRAVITY * deltaTime;
+    if (!this.isGrounded) {
+      this.velocity.y -= this.gravity * deltaTime;
 
       // INFO: small air resistance
       damping.val *= 0.1;
     }
-    this.playerVelocity.addScaledVector(this.playerVelocity, damping.val);
-    const deltaPosition = this.playerVelocity.clone().multiplyScalar(deltaTime);
-    this.playerBody.translate(deltaPosition);
-    this.evaluateCollisions();
+
+    this.velocity.addScaledVector(this.velocity, damping.val);
+    const deltaPosition = this.velocity.clone().multiplyScalar(deltaTime);
+    this.body.translate(deltaPosition);
+
+    this.evaluateIntersections();
 
     // Update the camera position
-    this.camera.position.copy(this.playerBody.end);
+    this.camera.position.copy(this.body.end);
   }
 
-  private evaluateCollisions() {
-    this.playerIsGrounded = false;
-    const intersect = this.world.capsuleIntersect(this.playerBody);
+  private evaluateIntersections() {
+    this.isGrounded = false;
+    const intersect = this.world.capsuleIntersect(this.body);
 
     if (intersect) {
-      this.playerIsGrounded = intersect.normal.y > 0;
+      this.isGrounded = intersect.normal.y > 0;
 
-      if (!this.playerIsGrounded) {
-        this.playerVelocity.addScaledVector(intersect.normal, -intersect.normal.dot(this.playerVelocity));
+      if (!this.isGrounded) {
+        this.velocity.addScaledVector(intersect.normal, -intersect.normal.dot(this.velocity));
       }
 
-      this.playerBody.translate(intersect.normal.multiplyScalar(intersect.depth));
+      this.body.translate(intersect.normal.multiplyScalar(intersect.depth));
     }
   }
 }

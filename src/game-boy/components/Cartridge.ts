@@ -5,7 +5,7 @@ import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { applyGui, gui } from '@/src/setup/utils/gui';
 
-export abstract class Cartridge {
+export abstract class Cartridge extends Group {
   static DEBUG = false;
 
   public readonly game: Game;
@@ -18,6 +18,8 @@ export abstract class Cartridge {
   private readonly sphere: Mesh;
 
   protected constructor(model: GLTF, game: Game) {
+    super();
+
     this.game = game;
     this.name = game.name;
     this.description = game.description;

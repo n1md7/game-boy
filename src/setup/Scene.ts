@@ -3,14 +3,13 @@ import {
   AmbientLight,
   AxesHelper,
   CylinderGeometry,
-  DoubleSide,
   Group,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
   PlaneGeometry,
 } from 'three';
-import { Scene as ThreeScene, Color } from 'three';
+import { Scene as ThreeScene } from 'three';
 import { applyGui, gui } from '@/src/setup/utils/gui';
 import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
 import { Assets } from '@/src/assets';
@@ -22,7 +21,6 @@ export default class Scene extends ThreeScene {
   constructor(room: GLTF) {
     super();
 
-    this.background = new Color('#1f1e1e');
     this.light = this.addLight();
     this.room = new Group();
     this.room.add(room.scene);

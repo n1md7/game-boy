@@ -1,32 +1,32 @@
 import '@/src/styles/style.css';
 
+import { Clock } from 'three';
 import { Performance } from '@/src/setup/utils/Performance';
 import { Resizer } from '@/src/setup/utils/resizer';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Timestamp } from '@/src/setup/utils/Timestamp';
 import { Renderer, Camera, Scene } from '@/src/setup';
-import { Player } from '@/src/first-person/Player';
 import { Debug } from '@/src/setup/utils/common';
 import { GameBoy } from '@/src/game-boy/GameBoy';
-import { Clock } from 'three';
 import { MarioCartridge } from '@/src/game-boy/cartridges/MarioCartridge';
 import { DoomCartridge } from '@/src/game-boy/cartridges/DoomCartridge';
 import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { Assets, AssetsLoaded, extractAssets } from '@/src/assets';
+import { PlayerController } from '@/src/first-person/controllers/PlayerController';
 
 AssetsLoaded.then(extractAssets).then(setup).catch(console.error);
 
 function setup() {
   const FPS = 60;
-  const DELAY_MS = 1000 / FPS; // millis
+  const DELAY = 1000 / FPS; // millis
   const world = new Octree();
   const clock = new Clock();
-  const renderer = new Renderer();
   const camera = new Camera();
+  const renderer = new Renderer();
   const scene = new Scene(Assets.Room);
-  const player = new Player(camera, world);
+  const player = new PlayerController(camera, world);
   const gameBoy = new GameBoy();
   const performance = new Performance();
   const timestamp = new Timestamp();
@@ -43,6 +43,8 @@ function setup() {
   const quakeCartridge = new QuakeCartridge(Assets.Cartridge, Assets.Quake);
   const diggerCartridge = new DiggerCartridge(Assets.Cartridge, Assets.Digger);
   const dukeCartridge = new DukeCartridge(Assets.Cartridge, Assets.Duke);
+
+  world.fromGraphNode(marioCartridge);
 
   const cartridges = [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge];
 
@@ -66,14 +68,14 @@ function setup() {
       Debug.enabled() && performance.start();
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
-      if (timestamp.delta >= DELAY_MS) {
+      if (timestamp.delta >= DELAY) {
         player.update(delta);
 
         for (const cartridge of cartridges) {
           if (!cartridge.scene.visible) continue;
 
-          if (player.capsule.intersectsBox(cartridge.toBox3())) {
-            player.pickUpCartridge(cartridge);
+          if (player.intersects(cartridge)) {
+            player.pickUp(cartridge);
             cartridge.scene.visible = false;
             gameBoy.removeCartridge();
             gameBoy.connectExternalDisplay(scene.projectorScreen);
