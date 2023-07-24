@@ -4,6 +4,8 @@ import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { InputController } from '@/src/first-person/controllers/InputController';
 import { MouseController } from '@/src/first-person/controllers/MouseController';
 import { Camera } from '@/src/setup';
+import { Cartridge } from '@/src/game-boy/components/Cartridge';
+import { GameBoyController } from '@/src/game-boy/controllers/GameBoyController';
 
 export class Player {
   private readonly GRAVITY = 30;
@@ -14,6 +16,9 @@ export class Player {
   private readonly playerVelocity: Vector3;
   private readonly inputController: InputController;
   private readonly mouseController: MouseController;
+  private readonly gameBoyController: GameBoyController;
+
+  private readonly cartridges: Cartridge[] = [];
 
   private playerIsGrounded = false;
 
@@ -24,6 +29,7 @@ export class Player {
     this.playerVelocity = new Vector3();
     this.inputController = new InputController();
     this.mouseController = new MouseController(camera);
+    this.gameBoyController = new GameBoyController(camera);
 
     // Starting position
     this.playerBody.translate(new Vector3(0, 2, 4));
@@ -31,6 +37,10 @@ export class Player {
 
   get capsule() {
     return this.playerBody;
+  }
+
+  pickUpCartridge(cartridge: Cartridge) {
+    this.cartridges.push(cartridge);
   }
 
   subscribe() {

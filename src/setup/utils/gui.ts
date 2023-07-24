@@ -3,7 +3,7 @@ import { Debug } from '@/src/setup/utils/common';
 import { Euler, Group, Mesh, Vector3 } from 'three';
 
 export const gui = new GUI();
-const screen = gui.addFolder('Screen');
+const screen = gui.addFolder('Window');
 const pointerLock = () => document.body.requestPointerLock();
 screen.add({ pointerLock }, 'pointerLock').name('Pointer Lock');
 

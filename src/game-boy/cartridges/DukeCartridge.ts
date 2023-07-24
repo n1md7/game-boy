@@ -5,7 +5,7 @@ import { Texture } from 'three';
 
 export class DukeCartridge extends Cartridge {
   constructor(model: GLTF, image: Texture) {
-    Cartridge.DEBUG = true;
+    Cartridge.DEBUG = false;
     super(model, new Duke(image));
   }
 }

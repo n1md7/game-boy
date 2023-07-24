@@ -29,6 +29,10 @@ export class LinkedList<T = unknown> {
     this.length++;
   }
 
+  addMany(values: T[]) {
+    values.forEach((value) => this.add(value));
+  }
+
   remove(value: T) {
     if (this.head === null) return;
     if (this.head.value === value) {

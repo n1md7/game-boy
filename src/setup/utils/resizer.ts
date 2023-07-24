@@ -1,7 +1,7 @@
 import Camera from '@/src/setup/Camera';
 import { Renderer } from 'three';
 
-export class WindowUtils {
+export class Resizer {
   constructor(private readonly renderer: Renderer, private readonly camera: Camera) {
     this.resize = this.resize.bind(this);
   }

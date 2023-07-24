@@ -11,7 +11,7 @@ const createWindow = async () => {
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      preload: path.join(__dirname, 'preload.cjs'),
+      preload: path.join(__dirname, 'electron-preload.cjs'),
     },
   });
 

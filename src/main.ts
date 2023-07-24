@@ -1,8 +1,7 @@
 import '@/src/styles/style.css';
 
-import { MyGLTFLoader, MyTextureLoader } from '@/src/setup/utils/Loader';
 import { Performance } from '@/src/setup/utils/Performance';
-import { WindowUtils } from '@/src/setup/utils/window.utils';
+import { Resizer } from '@/src/setup/utils/resizer';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Timestamp } from '@/src/setup/utils/Timestamp';
 import { Renderer, Camera, Scene } from '@/src/setup';
@@ -15,46 +14,38 @@ import { DoomCartridge } from '@/src/game-boy/cartridges/DoomCartridge';
 import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
+import { Assets, AssetsLoaded, extractAssets } from '@/src/assets';
 
 emulators.pathPrefix = './js-dos/';
 
-const aGLTF = new MyGLTFLoader();
-const aIMAGE = new MyTextureLoader();
+AssetsLoaded.then(extractAssets).then(setup).catch(console.error);
 
-(async function setup() {
-  const [images, gameBoyGLTF, cartridgeGLTF, roomMapGLTF, projectorScreenGLTF] = await Promise.all([
-    Promise.all([
-      aIMAGE.load('images/cartridges/Doom.jpeg'),
-      aIMAGE.load('images/cartridges/Duke.jpeg'),
-      aIMAGE.load('images/cartridges/Digger.jpeg'),
-      aIMAGE.load('images/cartridges/Quake.jpeg'),
-      aIMAGE.load('images/cartridges/Mario.jpeg'),
-    ]),
-    aGLTF.load('3d/game-boy/model/scene.gltf'),
-    aGLTF.load('3d/game-boy/cartridge/scene.gltf'),
-    aGLTF.load('3d/maps/room/scene.gltf'),
-    aGLTF.load('3d/projector/scene.gltf'),
-  ]);
-
-  const { 0: DoomTexture, 1: DukeTexture, 2: DiggerTexture, 3: QuakeTexture, 4: MarioTexture } = images;
-
+function setup() {
+  const FPS = 60;
+  const DELAY_MS = 1000 / FPS; // millis
   const world = new Octree();
+  const clock = new Clock();
   const renderer = new Renderer();
   const camera = new Camera();
-  const scene = new Scene(roomMapGLTF, projectorScreenGLTF);
+  const scene = new Scene(Assets.Room);
   const player = new Player(camera, world);
-  const gameBoy = new GameBoy(gameBoyGLTF);
+  const gameBoy = new GameBoy();
+  const performance = new Performance();
+  const timestamp = new Timestamp();
+  const resizer = new Resizer(renderer, camera);
+  gameBoy.scene.rotation.order = 'YXZ';
 
-  world.fromGraphNode(roomMapGLTF.scene);
+  world.fromGraphNode(Assets.Room.scene);
 
-  gameBoy.scene.position.set(4.3, 1, 1);
+  gameBoy.scene.position.set(1.6, 1, 1);
   gameBoy.scene.rotation.set(0, -Math.PI / 2, 0);
+  gameBoy.scene.scale.multiplyScalar(0.35);
 
-  const marioCartridge = new MarioCartridge(cartridgeGLTF, MarioTexture);
-  const doomCartridge = new DoomCartridge(cartridgeGLTF, DoomTexture);
-  const quakeCartridge = new QuakeCartridge(cartridgeGLTF, QuakeTexture);
-  const diggerCartridge = new DiggerCartridge(cartridgeGLTF, DiggerTexture);
-  const dukeCartridge = new DukeCartridge(cartridgeGLTF, DukeTexture);
+  const marioCartridge = new MarioCartridge(Assets.Cartridge, Assets.Mario);
+  const doomCartridge = new DoomCartridge(Assets.Cartridge, Assets.Doom);
+  const quakeCartridge = new QuakeCartridge(Assets.Cartridge, Assets.Quake);
+  const diggerCartridge = new DiggerCartridge(Assets.Cartridge, Assets.Digger);
+  const dukeCartridge = new DukeCartridge(Assets.Cartridge, Assets.Duke);
 
   const cartridges = [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge];
 
@@ -66,18 +57,12 @@ const aIMAGE = new MyTextureLoader();
 
   scene.room.add(...cartridges.map((cartridge) => cartridge.scene));
 
-  scene.add(gameBoy.scene, projectorScreenGLTF.scene);
+  scene.add(gameBoy.scene);
 
   {
-    const FPS = 60;
-    const DELAY_MS = 1000 / FPS; // millis
-    const clock = new Clock();
-    const performance = new Performance();
-    const timestamp = new Timestamp();
-    const windowUtils = new WindowUtils(renderer, camera);
     (function onSetup() {
       Debug.enabled() && performance.show();
-      windowUtils.subscribe();
+      resizer.subscribe();
       player.subscribe();
     })();
     (function gameLoop() {
@@ -86,15 +71,16 @@ const aIMAGE = new MyTextureLoader();
       const time = clock.getElapsedTime();
       if (timestamp.delta >= DELAY_MS) {
         player.update(delta);
-        if (camera.position.y <= -25) player.reset();
 
         for (const cartridge of cartridges) {
           if (!cartridge.scene.visible) continue;
 
           if (player.capsule.intersectsBox(cartridge.toBox3())) {
+            player.pickUpCartridge(cartridge);
             cartridge.scene.visible = false;
             gameBoy.removeCartridge();
             gameBoy.insertCartridge(cartridge);
+            gameBoy.mirrorDisplayToProjector(scene.projectorScreen);
           }
 
           cartridge.update(time);
@@ -109,4 +95,4 @@ const aIMAGE = new MyTextureLoader();
       requestAnimationFrame(gameLoop);
     })();
   }
-})().catch(console.error);
+}

@@ -90,7 +90,6 @@ export abstract class Game {
     }
 
     const imageData = new ImageData(this.rgba, this.screen.size.width, this.screen.size.height);
-    this.screen.putImageData(imageData, 0, 0);
-    this.screen.needsUpdate();
+    this.screen.putImageData(imageData);
   }
 }
