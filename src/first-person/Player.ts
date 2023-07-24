@@ -45,7 +45,7 @@ export class Player {
 
   update(delta: number) {
     // INFO: Respawn player if it falls off the map
-    if (this.body.end.y < -64) this.reset();
+    if (this.body.end.y < -32) this.reset();
 
     const deltaTime = Math.min(0.05, delta) / this.steps;
 
