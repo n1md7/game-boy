@@ -1,0 +1,11 @@
+Model Information:
+* title:	Projector Asset
+* source:	https://sketchfab.com/3d-models/projector-asset-f39081bfbd624f8b8f07eb65d146e281
+* author:	djechopetro (https://sketchfab.com/djechopetro)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Projector Asset" (https://sketchfab.com/3d-models/projector-asset-f39081bfbd624f8b8f07eb65d146e281) by djechopetro (https://sketchfab.com/djechopetro) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
