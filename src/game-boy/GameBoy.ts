@@ -21,7 +21,7 @@ export class GameBoy {
     this.scene.add(Assets.GameBoy.scene.clone(), this.screen.scene);
     // No cartridge inserted, no game to play.
     this.screen.write('Insert cartridge to play.');
-    applyGui(gui.addFolder('GameBoy'), this.scene);
+    this.scene.rotation.order = 'YXZ';
   }
 
   get mirrorMode() {

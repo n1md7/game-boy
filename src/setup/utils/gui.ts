@@ -11,9 +11,9 @@ gui.show(Debug.enabled());
 
 export const applyPosition = (gui: GUI, object: Vector3) => {
   const folder = gui.addFolder('Position');
-  folder.add(object, 'x', -10, 10, 0.001);
-  folder.add(object, 'y', -10, 10, 0.001);
-  folder.add(object, 'z', -10, 10, 0.001);
+  folder.add(object, 'x', -20, 240, 0.001);
+  folder.add(object, 'y', -20, 240, 0.001);
+  folder.add(object, 'z', -20, 240, 0.001);
   folder.close();
 };
 
@@ -27,9 +27,9 @@ export const applyRotation = (gui: GUI, object: Euler) => {
 
 export const applyScale = (gui: GUI, object: Vector3) => {
   const folder = gui.addFolder('Scale');
-  folder.add(object, 'x', 0.1, 4, 0.001);
-  folder.add(object, 'y', 0.1, 4, 0.001);
-  folder.add(object, 'z', 0.1, 4, 0.001);
+  folder.add(object, 'x', 0.1, 14, 0.001);
+  folder.add(object, 'y', 0.1, 14, 0.001);
+  folder.add(object, 'z', 0.1, 14, 0.001);
   folder.close();
 };
 

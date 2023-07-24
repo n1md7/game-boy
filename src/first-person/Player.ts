@@ -62,12 +62,14 @@ export class Player {
   }
 
   reset() {
-    const center = new Vector3(0, 10, 0);
+    const center = new Vector3(0, 1, 0);
     this.playerBody.translate(center.sub(this.playerBody.end));
   }
 
   update(delta: number) {
     if (this.playerIsDisabled) return;
+
+    if (this.playerBody.end.y < -64) this.reset();
 
     const deltaTime = Math.min(0.05, delta) / this.STEPS_PER_FRAME;
 

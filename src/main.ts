@@ -31,7 +31,6 @@ function setup() {
   const performance = new Performance();
   const timestamp = new Timestamp();
   const resizer = new Resizer(renderer, camera);
-  gameBoy.scene.rotation.order = 'YXZ';
 
   world.fromGraphNode(Assets.Room.scene);
 
@@ -80,10 +79,15 @@ function setup() {
             gameBoy.connectExternalDisplay(scene.projectorScreen);
             gameBoy.mirrorMode.showBoth();
             gameBoy.insertCartridge(cartridge);
-            player.disable();
+            // player.disable();
           }
 
           cartridge.update(time);
+
+          {
+            gameBoy.scene.position.setY(Math.sin(time) * 0.05 + 0.5);
+            gameBoy.scene.rotation.y = time;
+          }
         }
 
         timestamp.update();
