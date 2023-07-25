@@ -1,24 +1,20 @@
-import '@/src/styles/style.css';
-
 import { Clock } from 'three';
+import { Assets } from '@/src/assets';
+import { Debug } from '@/src/setup/utils/common';
+import { GameBoy } from '@/src/game-boy/GameBoy';
 import { Performance } from '@/src/setup/utils/Performance';
 import { Resizer } from '@/src/setup/utils/resizer';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 import { Timestamp } from '@/src/setup/utils/Timestamp';
 import { Renderer, Camera, Scene } from '@/src/setup';
-import { Debug } from '@/src/setup/utils/common';
-import { GameBoy } from '@/src/game-boy/GameBoy';
 import { MarioCartridge } from '@/src/game-boy/cartridges/MarioCartridge';
 import { DoomCartridge } from '@/src/game-boy/cartridges/DoomCartridge';
 import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
-import { Assets, AssetsLoaded, extractAssets } from '@/src/assets';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
 
-AssetsLoaded.then(extractAssets).then(setup).catch(console.error);
-
-function setup() {
+export function setup() {
   const FPS = 60;
   const DELAY = 1000 / FPS; // millis
   const world = new Octree();

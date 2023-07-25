@@ -4,14 +4,15 @@
     <meta charset="UTF-8" />
     <base href="%GAME_BASE_URL%" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="theme-color" content="#000000" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="node_modules/js-dos/dist/js-dos.js"></script>
-    <link rel="stylesheet" href="node_modules/js-dos/dist/js-dos.css" />
+    <script type="module" src="./node_modules/js-dos/dist/js-dos.js"></script>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <title>Vite + ThreeJS + TS</title>
   </head>
   <body>
-    <div id="loading">...</div>
-    <canvas id="canvas" hidden></canvas>
-    <script type="module" src="src/main.ts"></script>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="./src/ui/index.tsx"></script>
   </body>
 </html>

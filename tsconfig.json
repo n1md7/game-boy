@@ -17,6 +17,8 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "baseUrl": ".",
+    "jsx": "react-jsx",
+    "jsxImportSource": "solid-js",
     "paths": {
       "@/*": ["./*"]
     }

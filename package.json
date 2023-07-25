@@ -42,20 +42,24 @@
     "jsdom": "^22.1.0",
     "lint-staged": "^13.2.3",
     "prettier": "2.8.8",
+    "solid-devtools": "^0.27.3",
     "typescript": "^5.1.6",
     "vite": "^4.3.9",
     "vite-plugin-glsl": "^1.1.2",
+    "vite-plugin-solid": "^2.7.0",
     "vitest": "^0.32.2"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
+    "bootstrap": "^5.3.0",
     "electron-squirrel-startup": "^1.0.0",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
     "js-dos": "^7.5.0",
     "lil-gui": "^0.18.2",
+    "solid-js": "^1.7.6",
     "stats.js": "^0.17.0",
     "three": "^0.154.0"
   },
