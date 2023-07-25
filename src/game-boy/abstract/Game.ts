@@ -81,7 +81,8 @@ export abstract class Game {
   }
 
   private onFrame(rgb: Uint8Array | null) {
-    const pixels = this.screen.size.width * this.screen.size.height;
+    const { width, height } = this.screen.size;
+    const pixels = width * height;
     for (let next = 0; next < pixels; ++next) {
       if (!rgb) continue;
       this.rgba[next * 4 + 0] = rgb[next * 3 + 0];
@@ -90,7 +91,7 @@ export abstract class Game {
       this.rgba[next * 4 + 3] = 255;
     }
 
-    const imageData = new ImageData(this.rgba, this.screen.size.width, this.screen.size.height);
+    const imageData = new ImageData(this.rgba, width, height);
     this.screen.putImageData(imageData);
   }
 }
