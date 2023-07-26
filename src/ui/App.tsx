@@ -5,22 +5,19 @@ import { createEffect, createSignal, onMount, Show } from 'solid-js';
 import { manager } from '@/src/setup/utils/Loader';
 import { delay } from '@/src/setup/utils/common';
 import { AssetsLoaded, extractAssets } from '@/src/assets';
-import { setup } from '@/src/main';
+import { state, setup } from '@/src/main';
 
 const App: Component = () => {
   const [progress, setProgress] = createSignal(0.0);
   const [finished, setFinished] = createSignal(false);
-  const [started, setStarted] = createSignal(false);
+  const [startClicked, setStartedClicked] = createSignal(false);
 
-  const handleStart = () => setStarted(true);
-  const lockPointer = () => document.body.requestPointerLock();
+  const handleStart = () => setStartedClicked(true);
 
   createEffect(() => {
-    if (started()) {
-      lockPointer();
-      setup();
-    }
-  });
+    if (startClicked()) return delay(100).then(setup);
+    return Promise.resolve();
+  }, [startClicked]);
 
   onMount(() => {
     AssetsLoaded.then(extractAssets).catch(console.error);
@@ -48,18 +45,19 @@ const App: Component = () => {
           </div>
         }
       >
-        <canvas id="canvas" hidden={!started()}></canvas>
-        {!started() && (
+        <Show when={!state.started}>
           <div id="loading" class="container">
             <div class="row">
               <div class="col d-flex justify-content-center">
-                <button class="btn btn-outline-dark" onClick={handleStart}>
-                  Start Game
-                </button>
+                <Show when={!startClicked()} fallback={'Loading...'}>
+                  <button class="btn btn-outline-dark" onClick={handleStart}>
+                    Start Game
+                  </button>
+                </Show>
               </div>
             </div>
           </div>
-        )}
+        </Show>
       </Show>
     </>
   );

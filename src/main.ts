@@ -13,6 +13,13 @@ import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
+import { createStore } from 'solid-js/store';
+
+export const [state, setState] = createStore({
+  isPaused: false,
+  isMuted: false,
+  started: false,
+});
 
 export function setup() {
   const FPS = 60;
@@ -59,6 +66,8 @@ export function setup() {
       Debug.enabled() && performance.show();
       resizer.subscribe();
       player.subscribe();
+      setState({ started: true });
+      document.body.requestPointerLock();
     })();
     (function gameLoop() {
       Debug.enabled() && performance.start();

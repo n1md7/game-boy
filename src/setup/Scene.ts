@@ -30,7 +30,7 @@ export default class Scene extends ThreeScene {
     const wall = new Mesh(
       new PlaneGeometry(100, 100),
       new MeshBasicMaterial({
-        color: 'rgba(152,151,151,0.69)',
+        color: '#989797',
       })
     );
     wall.position.set(131, 57.178, -11.926);

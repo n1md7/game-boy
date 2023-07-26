@@ -32,6 +32,7 @@ export abstract class Cartridge extends Group {
     this.model = model.scene.clone();
     this.model.scale.multiplyScalar(2);
     this.model.position.set(0, -0.08, 0);
+    this.model.rotation.set(0, (Math.random() - 0.5) * Math.PI, 0);
 
     this.material = new ShaderMaterial({
       uniforms: {
