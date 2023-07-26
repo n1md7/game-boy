@@ -13,13 +13,7 @@ import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
-import { createStore } from 'solid-js/store';
-
-export const [state, setState] = createStore({
-  isPaused: false,
-  isMuted: false,
-  started: false,
-});
+import { setState } from '@/src/setup/store';
 
 export function setup() {
   const FPS = 60;

@@ -5,7 +5,8 @@ import { createEffect, createSignal, onMount, Show } from 'solid-js';
 import { manager } from '@/src/setup/utils/Loader';
 import { delay } from '@/src/setup/utils/common';
 import { AssetsLoaded, extractAssets } from '@/src/assets';
-import { state, setup } from '@/src/main';
+import { setup } from '@/src/main';
+import { state } from '@/src/setup/store';
 
 const App: Component = () => {
   const [progress, setProgress] = createSignal(0.0);
