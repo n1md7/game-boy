@@ -1,9 +1,11 @@
 import { Game } from '@/src/game-boy/abstract/Game';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
-import { SphereGeometry, AxesHelper, Box3 } from 'three';
+import { SphereGeometry, AxesHelper, Box3, ShaderMaterial } from 'three';
 import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { applyGui, gui } from '@/src/setup/utils/gui';
+import vertexShader from '@/src/game-boy/components/shaders/sphere/vertexShader.glsl';
+import fragmentShader from '@/src/game-boy/components/shaders/sphere/fragmentShader.glsl';
 
 export abstract class Cartridge extends Group {
   static DEBUG = false;
@@ -16,6 +18,7 @@ export abstract class Cartridge extends Group {
 
   private readonly model: Group;
   private readonly sphere: Mesh;
+  private readonly material: ShaderMaterial;
 
   protected constructor(model: GLTF, game: Game) {
     super();
@@ -30,15 +33,18 @@ export abstract class Cartridge extends Group {
     this.model.scale.multiplyScalar(2);
     this.model.position.set(0, -0.08, 0);
 
+    this.material = new ShaderMaterial({
+      uniforms: {
+        time: { value: 1.0 },
+      },
+      vertexShader,
+      fragmentShader,
+      transparent: true,
+      opacity: 0.1,
+    });
+
     // Setup outline sphere of cartridge
-    this.sphere = new Mesh(
-      new SphereGeometry(0.5, 32, 32),
-      new MeshBasicMaterial({
-        color: '#ffff00',
-        transparent: true,
-        opacity: 0.12,
-      })
-    );
+    this.sphere = new Mesh(new SphereGeometry(0.5, 32, 32), this.material);
     this.sphere.position.set(0, 0, 0);
 
     // Setup light of cartridge
@@ -79,6 +85,7 @@ export abstract class Cartridge extends Group {
   update(time: number) {
     this.model.position.setY(Math.sin(time) * 0.05 - 0.08);
     this.model.rotation.set(0, time, 0);
+    this.material.uniforms.time.value = time;
   }
 
   toBox3() {
