@@ -1,16 +1,7 @@
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import {
-  AmbientLight,
-  AxesHelper,
-  CylinderGeometry,
-  Group,
-  Mesh,
-  MeshBasicMaterial,
-  MeshStandardMaterial,
-  PlaneGeometry,
-} from 'three';
+import { AmbientLight, AxesHelper, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry } from 'three';
 import { Scene as ThreeScene } from 'three';
-import { applyGui, gui } from '@/src/setup/utils/gui';
+import { gui } from '@/src/setup/utils/gui';
 import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
 import { Assets } from '@/src/assets';
 
@@ -50,20 +41,6 @@ export default class Scene extends ThreeScene {
       }
     });
     room.scene.add(projector);
-    const projectorLightHelper = new Mesh(
-      new CylinderGeometry(0.5, 6, 16, 4, 10),
-      new MeshBasicMaterial({
-        color: '#FFFFFF',
-        transparent: true,
-        wireframe: false,
-        opacity: 0.02,
-      })
-    );
-    projectorLightHelper.position.set(92, 73, -15.397);
-    projectorLightHelper.rotation.set(Math.PI * 0.25, -0.148, 1.415);
-    projectorLightHelper.scale.multiplyScalar(7.5);
-    applyGui(gui.addFolder('Projector Light'), projectorLightHelper);
-    room.scene.add(projectorLightHelper);
 
     this.room.add(new AxesHelper(200));
 

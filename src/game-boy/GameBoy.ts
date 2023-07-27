@@ -51,7 +51,7 @@ export class GameBoy {
     this.cartridge.game.connect(this.screen);
     // When frames are received, the builtInDisplay text is cleared.
     await this.cartridge.game.run();
-    this.cartridge.game.ci.mute();
+    // this.cartridge.game.ci.mute();
 
     return this.cartridge.game;
   }
