@@ -13,6 +13,10 @@ export abstract class GenericScreen {
   private TypeC?: GenericScreen;
 
   private mirroring: MirroringMode = 'Built-in';
+  private fullscreen = {
+    canvas: null as HTMLCanvasElement | null,
+    context: null as CanvasRenderingContext2D | null,
+  };
 
   protected constructor(width: number, height: number) {
     this.canvas = document.createElement('canvas');
@@ -44,6 +48,10 @@ export abstract class GenericScreen {
   }
 
   putImageData(imageData: ImageData) {
+    if (this.fullscreen.canvas) {
+      return this.fullscreen.context!.putImageData(imageData, 0, 0);
+    }
+
     if (['Mirror', 'Built-in'].includes(this.mirroring)) {
       const dx = (this.size.width - imageData.width) / 2;
       const dy = (this.size.height - imageData.height) / 2;
@@ -92,6 +100,25 @@ export abstract class GenericScreen {
 
   displayNoSignal() {
     this.write('No Signal! Please check connection.');
+  }
+
+  requestFullscreen() {
+    this.fullscreen.canvas = document.createElement('canvas')!;
+    this.fullscreen.context = this.fullscreen.canvas.getContext('2d')!;
+    document.body.appendChild(this.fullscreen.canvas);
+    this.fullscreen.canvas.requestFullscreen().then(() => {
+      this.fullscreen.canvas!.onfullscreenchange = () => {
+        if (!document.fullscreenElement) {
+          this.fullscreen.canvas?.remove();
+          this.fullscreen.canvas = null;
+          this.fullscreen.context = null;
+        }
+      };
+    });
+    this.fullscreen.canvas.ondblclick = null;
+    this.fullscreen.canvas.ondblclick = () => {
+      this.fullscreen.canvas!.requestPointerLock();
+    };
   }
 
   protected setTextFormat(): void {

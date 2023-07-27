@@ -19,6 +19,9 @@ export abstract class Game {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onFrame = this.onFrame.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
     emulators.pathPrefix = './js-dos/';
   }
 
@@ -63,11 +66,17 @@ export abstract class Game {
 
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
+    window.addEventListener('mousedown', this.onMouseDown);
+    window.addEventListener('mouseup', this.onMouseUp);
+    window.addEventListener('mousemove', this.onMouseMove);
   }
 
   protected unsubscribeUserInputs() {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
+    window.removeEventListener('mousedown', this.onMouseDown);
+    window.removeEventListener('mouseup', this.onMouseUp);
+    window.removeEventListener('mousemove', this.onMouseMove);
   }
 
   private onKeyDown(e: KeyboardEvent) {
@@ -78,6 +87,18 @@ export abstract class Game {
   private onKeyUp(e: KeyboardEvent) {
     const keyCode = emulatorsUi.controls.domToKeyCode(e.keyCode);
     this.commandInterface.sendKeyEvent(keyCode, false);
+  }
+
+  private onMouseDown() {
+    this.commandInterface.sendMouseButton(0, true);
+  }
+
+  private onMouseUp() {
+    this.commandInterface.sendMouseButton(0, false);
+  }
+
+  private onMouseMove(e: MouseEvent) {
+    this.commandInterface.sendMouseMotion(e.movementX, e.movementY);
   }
 
   private onFrame(rgb: Uint8Array | null) {
