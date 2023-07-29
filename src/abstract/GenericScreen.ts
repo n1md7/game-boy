@@ -117,7 +117,7 @@ export abstract class GenericScreen {
     });
     this.fullscreen.canvas.ondblclick = null;
     this.fullscreen.canvas.ondblclick = () => {
-      this.fullscreen.canvas!.requestpointer - lock();
+      this.fullscreen.canvas!.requestPointerLock();
     };
   }
 

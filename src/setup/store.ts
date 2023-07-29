@@ -27,24 +27,25 @@ type Ref = {
 };
 export const [ref, setRef] = createStore<Ref>({});
 
-export const menuToggle = () => {
-  setShow({ inventory: false, menu: true });
-  setState({ isPaused: !state.isPaused });
-};
-
 export const inventoryToggle = () => {
   setShow({ menu: false, inventory: true });
-  setState({ isPaused: !state.isPaused });
+  setState('isPaused', (isPaused) => {
+    if (isPaused) inventory.gameBoy?.resume();
+    else inventory.gameBoy?.pause();
+    return !isPaused;
+  });
 };
 
 export const resume = () => {
   setShow({ menu: false, inventory: false });
   setState({ isPaused: false });
+  inventory.gameBoy?.resume();
 };
 
 export const pause = () => {
   setShow({ menu: true, inventory: false });
   setState({ isPaused: true });
+  inventory.gameBoy?.pause();
 };
 
 export const start = () => {
@@ -52,5 +53,11 @@ export const start = () => {
 };
 
 export const mute = () => {
-  setState({ isMuted: !state.isMuted });
+  setState({ isMuted: true });
+  void inventory.gameBoy?.mute();
+};
+
+export const unmute = () => {
+  setState({ isMuted: false });
+  void inventory.gameBoy?.unmute();
 };

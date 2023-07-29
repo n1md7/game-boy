@@ -1,10 +1,19 @@
 import { Button, Card, Image, Col, Row, Badge } from 'solid-bootstrap';
-import { inventory } from '@/src/setup/store';
+import { inventory, resume } from '@/src/setup/store';
 import { Show } from 'solid-js';
+import { Cartridge } from '@/src/game-boy/components/Cartridge';
 
 export default function Collection() {
   const badges = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
-  const getBadge = (idx: number) => badges[idx % badges.length];
+  const getBadge = (idx: number) => badges[idx % badges.length]; // Round-robin
+
+  const handleCartridgeInsert = (cartridge: Cartridge) => () => {
+    if (!inventory.gameBoy) return alert('You need to pick up the game Boy first!');
+
+    inventory.gameBoy.removeCartridge();
+    resume();
+    inventory.gameBoy.insertCartridge(cartridge).then();
+  };
 
   return (
     <>
@@ -76,8 +85,8 @@ export default function Collection() {
                           </Badge>
                         ))}
                       </Card.Text>
-                      <Button variant="outline-dark" size="lg" class={'w-100'}>
-                        Click to insert
+                      <Button variant="outline-dark" size="lg" class={'w-100'} onClick={handleCartridgeInsert(cartridge)}>
+                        Insert cartridge and play
                       </Button>
                     </Card.Body>
                   </Card>

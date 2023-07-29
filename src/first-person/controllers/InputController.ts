@@ -1,4 +1,4 @@
-import { menuToggle, inventoryToggle, pause } from '@/src/setup/store';
+import { inventoryToggle, pause } from '@/src/setup/store';
 
 export class InputController extends EventTarget {
   private moveForward = false;

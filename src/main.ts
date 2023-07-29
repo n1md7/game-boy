@@ -60,6 +60,8 @@ export function setup() {
       Debug.enabled() && performance.show();
       resizer.subscribe();
       player.subscribe();
+      // Wire up the gameboy to the projector screen
+      gameBoy.connectExternalDisplay(scene.projectorScreen);
       setState({ started: true });
       setRef({ player });
       document.addEventListener('pointerlockchange', () => {
@@ -83,18 +85,7 @@ export function setup() {
           for (const cartridge of cartridges) {
             if (!cartridge.scene.visible) continue;
 
-            if (player.intersects(cartridge)) {
-              player.pickUp(cartridge);
-              // gameBoy.removeCartridge();
-              // gameBoy.connectExternalDisplay(scene.projectorScreen);
-              // gameBoy.mirrorMode.showBoth();
-              // gameBoy.insertCartridge(cartridge);
-              // setInventory(
-              //   'cartridges',
-              //   cartridges.filter((c) => c.scene.visible)
-              // );
-              // player.disable();
-            }
+            if (player.intersects(cartridge)) player.pickUp(cartridge);
 
             cartridge.update(time);
 

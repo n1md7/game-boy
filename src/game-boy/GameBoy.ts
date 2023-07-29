@@ -37,6 +37,22 @@ export class GameBoy {
     };
   }
 
+  pause() {
+    this.cartridge?.game?.ci?.pause?.();
+  }
+
+  resume() {
+    this.cartridge?.game?.ci?.resume?.();
+  }
+
+  mute() {
+    this.cartridge?.game?.ci?.mute?.();
+  }
+
+  unmute() {
+    this.cartridge?.game?.ci?.unmute?.();
+  }
+
   async insertCartridge(cartridge: Cartridge): Promise<Game> {
     if (this.cartridge) throw 'You need to remove the current cartridge first.';
 
