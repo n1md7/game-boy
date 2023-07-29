@@ -29,8 +29,6 @@ export function setup() {
   const timestamp = new Timestamp();
   const resizer = new Resizer(renderer, camera);
 
-  // @ts-ignore
-  window.gameboy = gameBoy;
   world.fromGraphNode(Assets.Room.scene);
 
   gameBoy.scene.position.set(1.6, 1, 1);

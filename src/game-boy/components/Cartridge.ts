@@ -1,6 +1,6 @@
 import { Game } from '@/src/game-boy/abstract/Game';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
-import { SphereGeometry, AxesHelper, Box3, ShaderMaterial } from 'three';
+import { SphereGeometry, AxesHelper, Box3, ShaderMaterial, Texture } from 'three';
 import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { applyGui, gui } from '@/src/setup/utils/gui';
@@ -13,8 +13,10 @@ export abstract class Cartridge extends Group {
   public readonly game: Game;
   public readonly name: Cartridges;
   public readonly image: Mesh;
+  public readonly thumbnail: Texture;
   public readonly description: string;
   public readonly scene: Group;
+  public readonly tags: string[] = [];
 
   private readonly model: Group;
   private readonly sphere: Mesh;
@@ -25,6 +27,8 @@ export abstract class Cartridge extends Group {
 
     this.game = game;
     this.name = game.name;
+    this.tags = game.tags;
+    this.thumbnail = game.image;
     this.description = game.description;
     this.scene = new Group();
 

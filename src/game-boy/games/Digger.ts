@@ -7,4 +7,5 @@ export class Digger extends Game {
     'Digger is a computer game released by Canadian developer Windmill Software in 1983, ' +
     'popular in the era of the IBM PC and Commodore 64. ' +
     'It is similar in design to the 1982 arcade game Mr. Do!.';
+  public readonly tags = ['arcade', 'classic', 'retro', '1980s', '2d'];
 }

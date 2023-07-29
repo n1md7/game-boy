@@ -5,6 +5,7 @@ import { Texture } from 'three';
 
 export abstract class Game {
   public abstract readonly name: Cartridges;
+  public abstract readonly tags: string[];
   public abstract readonly description: string;
 
   protected readonly rootPath = import.meta.env.GAME_BASE_URL || '.';

@@ -4,16 +4,22 @@ import type { Component } from 'solid-js';
 import { createEffect, createSignal, onMount, Show } from 'solid-js';
 import { manager } from '@/src/setup/utils/Loader';
 import { delay } from '@/src/setup/utils/common';
-import { AssetsLoaded, extractAssets } from '@/src/assets';
+import { Assets, AssetsLoaded, extractAssets } from '@/src/assets';
 import { setup } from '@/src/main';
-import { state } from '@/src/setup/store';
+import { setInventory, state } from '@/src/setup/store';
+import Inventory from '@/src/ui/components/inventory/Inventory';
+import { MarioCartridge } from '@/src/game-boy/cartridges/MarioCartridge';
+import { DoomCartridge } from '@/src/game-boy/cartridges/DoomCartridge';
+import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
+import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
+import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 
 const App: Component = () => {
   const [progress, setProgress] = createSignal(0.0);
-  const [finished, setFinished] = createSignal(false);
-  const [startClicked, setStartedClicked] = createSignal(false);
+  const [finished, setFinished] = createSignal(true);
+  const [startClicked, setStartClicked] = createSignal(false);
 
-  const handleStart = () => setStartedClicked(true);
+  const handleStart = () => setStartClicked(true);
 
   createEffect(() => {
     if (startClicked()) return delay(100).then(setup);
@@ -21,7 +27,20 @@ const App: Component = () => {
   }, [startClicked]);
 
   onMount(() => {
-    AssetsLoaded.then(extractAssets).catch(console.error);
+    AssetsLoaded.then(extractAssets)
+      .then(() => {
+        // TODO: remove this when done
+        const marioCartridge = new MarioCartridge(Assets.Cartridge, Assets.Mario);
+        const doomCartridge = new DoomCartridge(Assets.Cartridge, Assets.Doom);
+        const quakeCartridge = new QuakeCartridge(Assets.Cartridge, Assets.Quake);
+        const diggerCartridge = new DiggerCartridge(Assets.Cartridge, Assets.Digger);
+        const dukeCartridge = new DukeCartridge(Assets.Cartridge, Assets.Duke);
+
+        setInventory({
+          cartridges: [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge],
+        });
+      })
+      .catch(console.error);
     manager.onLoad = () => {
       setProgress(100);
       delay(1000).then(() => setFinished(true));
@@ -33,6 +52,7 @@ const App: Component = () => {
 
   return (
     <>
+      <Inventory />
       <Show
         when={finished()}
         fallback={
