@@ -99,7 +99,7 @@ export abstract class GenericScreen {
   }
 
   displayNoSignal() {
-    this.write('No Signal! Please check connection.');
+    this.write('No Signal! Please check your connection.');
   }
 
   requestFullscreen() {
@@ -117,7 +117,7 @@ export abstract class GenericScreen {
     });
     this.fullscreen.canvas.ondblclick = null;
     this.fullscreen.canvas.ondblclick = () => {
-      this.fullscreen.canvas!.requestPointerLock();
+      this.fullscreen.canvas!.requestpointer - lock();
     };
   }
 

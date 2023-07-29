@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import { Vector2, Vector3 } from 'three';
 import { Camera } from '@/src/setup';
 import { Capsule } from 'three/examples/jsm/math/Capsule';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
@@ -85,6 +85,14 @@ export class Player {
     if (this.isGrounded && action.jump) {
       this.velocity.y = this.jumpVelocity;
     }
+  }
+
+  rotation(rotation: Vector2) {
+    this.camera.rotation.x = rotation.x;
+    this.camera.rotation.y = rotation.y;
+
+    // INFO: Limit the vertical rotation
+    this.camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.camera.rotation.x));
   }
 
   private getSideVector(vector: Vector3) {

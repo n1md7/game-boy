@@ -1,38 +1,22 @@
-import { Camera } from '@/src/setup';
+import { Vector2 } from 'three';
 
 export class MouseController extends EventTarget {
-  private readonly mouseSensitivity = 0.002;
-
-  constructor(private readonly camera: Camera) {
-    super();
-  }
+  public rotation = new Vector2();
+  public sensitivity = 0.002;
 
   subscribe() {
     document.addEventListener('mousemove', this.mouseMoveHandler.bind(this));
-    document.addEventListener('pointerlockchange', this.pointerLockHandler.bind(this));
   }
 
   unsubscribe() {
     document.removeEventListener('mousemove', this.mouseMoveHandler.bind(this));
-    document.removeEventListener('pointerlockchange', this.pointerLockHandler.bind(this));
   }
 
   private mouseMoveHandler({ movementY, movementX }: MouseEvent) {
     // INFO: only updates camera rotation if pointer is locked
     if (document.pointerLockElement !== document.body) return;
 
-    this.camera.rotation.y -= movementX * this.mouseSensitivity;
-    this.camera.rotation.x -= movementY * this.mouseSensitivity;
-
-    // INFO: clamp camera rotation on X axis
-    this.camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.camera.rotation.x));
-  }
-
-  private pointerLockHandler() {
-    if (document.pointerLockElement === document.body) {
-      this.dispatchEvent(new Event('PointerLock:enabled'));
-    } else {
-      this.dispatchEvent(new Event('PointerLock:disabled'));
-    }
+    this.rotation.x -= movementY * this.sensitivity;
+    this.rotation.y -= movementX * this.sensitivity;
   }
 }

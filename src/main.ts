@@ -13,7 +13,7 @@ import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
-import { setState } from '@/src/setup/store';
+import { pause, resume, setRef, setState, show, state } from '@/src/setup/store';
 
 export function setup() {
   const FPS = 60;
@@ -61,33 +61,47 @@ export function setup() {
       resizer.subscribe();
       player.subscribe();
       setState({ started: true });
-      document.body.requestPointerLock();
+      setRef({ player });
+      document.addEventListener('pointerlockchange', () => {
+        const isLocked = document.pointerLockElement === document.body;
+        if (isLocked) resume();
+        else {
+          if (show.inventory) return;
+          pause();
+        }
+      });
     })();
     (function gameLoop() {
       Debug.enabled() && performance.start();
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
       if (timestamp.delta >= DELAY) {
-        player.update(delta);
+        if (!state.isPaused && state.started) {
+          player.update(delta);
 
-        for (const cartridge of cartridges) {
-          if (!cartridge.scene.visible) continue;
+          if (player.intersects(gameBoy)) player.pickUp(gameBoy);
+          for (const cartridge of cartridges) {
+            if (!cartridge.scene.visible) continue;
 
-          if (player.intersects(cartridge)) {
-            player.pickUp(cartridge);
-            cartridge.scene.visible = false;
-            gameBoy.removeCartridge();
-            gameBoy.connectExternalDisplay(scene.projectorScreen);
-            gameBoy.mirrorMode.showBoth();
-            gameBoy.insertCartridge(cartridge);
-            // player.disable();
-          }
+            if (player.intersects(cartridge)) {
+              player.pickUp(cartridge);
+              // gameBoy.removeCartridge();
+              // gameBoy.connectExternalDisplay(scene.projectorScreen);
+              // gameBoy.mirrorMode.showBoth();
+              // gameBoy.insertCartridge(cartridge);
+              // setInventory(
+              //   'cartridges',
+              //   cartridges.filter((c) => c.scene.visible)
+              // );
+              // player.disable();
+            }
 
-          cartridge.update(time);
+            cartridge.update(time);
 
-          {
-            gameBoy.scene.position.setY(Math.sin(time) * 0.05 + 0.5);
-            gameBoy.scene.rotation.y = time;
+            {
+              gameBoy.scene.position.setY(Math.sin(time) * 0.05 + 0.5);
+              gameBoy.scene.rotation.y = time;
+            }
           }
         }
 

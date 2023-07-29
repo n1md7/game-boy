@@ -4,19 +4,15 @@ import type { Component } from 'solid-js';
 import { createEffect, createSignal, onMount, Show } from 'solid-js';
 import { manager } from '@/src/setup/utils/Loader';
 import { delay } from '@/src/setup/utils/common';
-import { Assets, AssetsLoaded, extractAssets } from '@/src/assets';
+import { AssetsLoaded, extractAssets } from '@/src/assets';
 import { setup } from '@/src/main';
-import { setInventory, state } from '@/src/setup/store';
+import { ref, state } from '@/src/setup/store';
 import Inventory from '@/src/ui/components/inventory/Inventory';
-import { MarioCartridge } from '@/src/game-boy/cartridges/MarioCartridge';
-import { DoomCartridge } from '@/src/game-boy/cartridges/DoomCartridge';
-import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
-import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
-import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
+import Menu from '@/src/ui/components/menu/Menu';
 
 const App: Component = () => {
   const [progress, setProgress] = createSignal(0.0);
-  const [finished, setFinished] = createSignal(true);
+  const [finished, setFinished] = createSignal(false);
   const [startClicked, setStartClicked] = createSignal(false);
 
   const handleStart = () => setStartClicked(true);
@@ -26,21 +22,17 @@ const App: Component = () => {
     return Promise.resolve();
   }, [startClicked]);
 
-  onMount(() => {
-    AssetsLoaded.then(extractAssets)
-      .then(() => {
-        // TODO: remove this when done
-        const marioCartridge = new MarioCartridge(Assets.Cartridge, Assets.Mario);
-        const doomCartridge = new DoomCartridge(Assets.Cartridge, Assets.Doom);
-        const quakeCartridge = new QuakeCartridge(Assets.Cartridge, Assets.Quake);
-        const diggerCartridge = new DiggerCartridge(Assets.Cartridge, Assets.Digger);
-        const dukeCartridge = new DukeCartridge(Assets.Cartridge, Assets.Duke);
+  createEffect(async () => {
+    if (!state.started) return;
 
-        setInventory({
-          cartridges: [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge],
-        });
-      })
-      .catch(console.error);
+    if (state.isPaused) ref.player?.disable();
+    if (!state.isPaused) {
+      if (await ref.player?.pointerLock()) ref.player?.enable();
+    }
+  }, [state]);
+
+  onMount(() => {
+    AssetsLoaded.then(extractAssets).catch(console.error);
     manager.onLoad = () => {
       setProgress(100);
       delay(1000).then(() => setFinished(true));
@@ -52,6 +44,7 @@ const App: Component = () => {
 
   return (
     <>
+      <Menu />
       <Inventory />
       <Show
         when={finished()}

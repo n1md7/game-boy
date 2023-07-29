@@ -1,3 +1,5 @@
+import { menuToggle, inventoryToggle, pause } from '@/src/setup/store';
+
 export class InputController extends EventTarget {
   private moveForward = false;
   private moveBackward = false;
@@ -29,70 +31,33 @@ export class InputController extends EventTarget {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    switch (event.code) {
-      case 'KeyW':
-        this.moveForward = true;
-        break;
-      case 'KeyS':
-        this.moveBackward = true;
-        break;
-      case 'KeyA':
-        this.moveLeft = true;
-        break;
-      case 'KeyD':
-        this.moveRight = true;
-        break;
-      case 'ShiftLeft':
-        this.isShiftPressed = true;
-        break;
-      case 'KeyF':
-        this.dispatchEvent(new Event('KeyF:pressed'));
-        break;
-      case 'KeyEscape':
-        this.dispatchEvent(new Event('ESC:pressed'));
-        break;
-      case 'Space':
-        this.isSpacePressed = true;
-        break;
-      case 'Digit1':
-      case 'Digit2':
-      case 'Digit3':
-      case 'Digit4':
-      case 'Digit5':
-      case 'Digit6':
-      case 'Digit7':
-      case 'Digit8':
-      case 'Digit9':
-      case 'Digit0':
-        this.dispatchEvent(
-          new CustomEvent('Digit:pressed', {
-            detail: parseInt(event.code.slice(-1)),
-          })
-        );
-        break;
-    }
+    event.preventDefault();
+
+    if (event.code === 'KeyW') this.moveForward = true;
+    if (event.code === 'KeyS') this.moveBackward = true;
+    if (event.code === 'KeyA') this.moveLeft = true;
+    if (event.code === 'KeyD') this.moveRight = true;
+    if (event.code === 'ArrowUp') this.moveForward = true;
+    if (event.code === 'ArrowDown') this.moveBackward = true;
+    if (event.code === 'ArrowLeft') this.moveLeft = true;
+    if (event.code === 'ArrowRight') this.moveRight = true;
+    if (event.code === 'ShiftLeft') this.isShiftPressed = true;
+    if (event.code === 'Space') this.isSpacePressed = true;
+
+    if (event.code === 'Tab') inventoryToggle();
+    if (event.code === 'Escape') pause();
   }
 
   private onKeyUp(event: KeyboardEvent) {
-    switch (event.code) {
-      case 'KeyW':
-        this.moveForward = false;
-        break;
-      case 'KeyS':
-        this.moveBackward = false;
-        break;
-      case 'KeyA':
-        this.moveLeft = false;
-        break;
-      case 'KeyD':
-        this.moveRight = false;
-        break;
-      case 'ShiftLeft':
-        this.isShiftPressed = false;
-        break;
-      case 'Space':
-        this.isSpacePressed = false;
-        break;
-    }
+    if (event.code === 'KeyW') this.moveForward = false;
+    if (event.code === 'KeyS') this.moveBackward = false;
+    if (event.code === 'KeyA') this.moveLeft = false;
+    if (event.code === 'KeyD') this.moveRight = false;
+    if (event.code === 'ArrowUp') this.moveForward = false;
+    if (event.code === 'ArrowDown') this.moveBackward = false;
+    if (event.code === 'ArrowLeft') this.moveLeft = false;
+    if (event.code === 'ArrowRight') this.moveRight = false;
+    if (event.code === 'ShiftLeft') this.isShiftPressed = false;
+    if (event.code === 'Space') this.isSpacePressed = false;
   }
 }

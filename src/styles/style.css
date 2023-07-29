@@ -8,6 +8,7 @@ canvas {
 body {
   background-color: rgba(0, 0, 0, 0.73);
   overflow: hidden;
+  font-family: monospace, sans-serif;
 }
 
 #loading {
@@ -17,5 +18,4 @@ body {
   transform: translate(-50%, -50%);
   color: rgba(0, 0, 0, 0.76);
   font-size: 2rem;
-  font-family: sans-serif;
 }

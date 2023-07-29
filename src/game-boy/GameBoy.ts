@@ -2,7 +2,7 @@ import { Screen } from '@/src/game-boy/components/Screen';
 import { Game } from '@/src/game-boy/abstract/Game';
 import { delay } from '@/src/setup/utils/common';
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
-import { Group } from 'three';
+import { Box3, Group } from 'three';
 import { Assets } from '@/src/assets';
 import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
 
@@ -64,5 +64,9 @@ export class GameBoy {
 
   connectExternalDisplay(projector: ProjectorDisplay) {
     this.screen.connectViaHDMI(projector.screen);
+  }
+
+  toBox3() {
+    return new Box3().setFromObject(this.scene);
   }
 }
