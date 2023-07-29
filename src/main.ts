@@ -80,6 +80,7 @@ export function setup() {
       if (timestamp.delta >= DELAY) {
         if (!state.isPaused && state.started) {
           player.update(delta);
+          gameBoy.update(time);
 
           if (player.intersects(gameBoy)) player.pickUp(gameBoy);
           for (const cartridge of cartridges) {
@@ -88,11 +89,6 @@ export function setup() {
             if (player.intersects(cartridge)) player.pickUp(cartridge);
 
             cartridge.update(time);
-
-            {
-              gameBoy.scene.position.setY(Math.sin(time) * 0.05 + 0.5);
-              gameBoy.scene.rotation.y = time;
-            }
           }
         }
 

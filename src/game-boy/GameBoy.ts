@@ -82,6 +82,13 @@ export class GameBoy {
     this.screen.connectViaHDMI(projector.screen);
   }
 
+  update(time: number) {
+    if (this.scene.visible) {
+      this.scene.position.setY(Math.sin(time) * 0.05 + 0.5);
+      this.scene.rotation.y = time;
+    }
+  }
+
   toBox3() {
     return new Box3().setFromObject(this.scene);
   }
