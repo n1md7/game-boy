@@ -1,5 +1,5 @@
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { AmbientLight, AxesHelper, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry } from 'three';
+import { AmbientLight, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry } from 'three';
 import { Scene as ThreeScene } from 'three';
 import { gui } from '@/src/setup/utils/gui';
 import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
@@ -41,8 +41,6 @@ export default class Scene extends ThreeScene {
       }
     });
     room.scene.add(projector);
-
-    this.room.add(new AxesHelper(200));
 
     this.add(this.room, this.light);
   }

@@ -14,6 +14,7 @@ export class GameBoy {
 
   constructor() {
     this.scene = new Group();
+    this.scene.name = 'GameBoy';
     this.screen = new Screen(320, 200);
     this.screen.scene.position.set(0, 0.43, 0.2);
 
@@ -91,5 +92,9 @@ export class GameBoy {
 
   toBox3() {
     return new Box3().setFromObject(this.scene);
+  }
+
+  static isGameBoy(object: any): object is GameBoy {
+    return object instanceof GameBoy;
   }
 }

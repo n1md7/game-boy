@@ -31,6 +31,7 @@ export abstract class Cartridge extends Group {
     this.thumbnail = game.image;
     this.description = game.description;
     this.scene = new Group();
+    this.scene.name = 'Cartridge';
 
     // Setup 3d model of cartridge
     this.model = model.scene.clone();

@@ -1,5 +1,5 @@
 import { Button, Card, Image, Col, Row, Badge } from 'solid-bootstrap';
-import { inventory, resume } from '@/src/setup/store';
+import { inventory, resume, showModal } from '@/src/setup/store';
 import { Show } from 'solid-js';
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 
@@ -8,7 +8,7 @@ export default function Collection() {
   const getBadge = (idx: number) => badges[idx % badges.length]; // Round-robin
 
   const handleCartridgeInsert = (cartridge: Cartridge) => () => {
-    if (!inventory.gameBoy) return alert('You need to pick up the game Boy first!');
+    if (!inventory.gameBoy) return showModal('Warning', 'You need to pick up the Game Boy first!');
 
     inventory.gameBoy.removeCartridge();
     resume();

@@ -13,7 +13,7 @@ import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
-import { pause, resume, setRef, setState, show, state } from '@/src/setup/store';
+import { inventory, pause, resume, setRef, setState, show, showModal, state } from '@/src/setup/store';
 
 export function setup() {
   const FPS = 60;
@@ -69,6 +69,7 @@ export function setup() {
         if (isLocked) resume();
         else {
           if (show.inventory) return;
+          if (show.modal) return;
           pause();
         }
       });
@@ -82,11 +83,30 @@ export function setup() {
           player.update(delta);
           gameBoy.update(time);
 
-          if (player.intersects(gameBoy)) player.pickUp(gameBoy);
+          if (!inventory.gameBoy && player.intersects(gameBoy)) {
+            player.pickUp(gameBoy);
+            showModal(
+              'Info',
+              'You picked up the Game Boy device. Press <kbd>M</kbd> to play it. ' +
+                'You can use the same key to switch between First Person and Emulator modes. ' +
+                'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
+                'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.'
+            );
+          }
           for (const cartridge of cartridges) {
             if (!cartridge.scene.visible) continue;
 
-            if (player.intersects(cartridge)) player.pickUp(cartridge);
+            if (player.intersects(cartridge)) {
+              player.pickUp(cartridge);
+              if (inventory.cartridges.length === 1) {
+                // First cartridge, show info
+                showModal(
+                  'Info',
+                  `You picked up <b>${cartridge.name}</b> cartridge. ` +
+                    `Press <kbd>TAB</kbd> to check the inventory. You can select the cartridge from the inventory and play it.`
+                );
+              }
+            }
 
             cartridge.update(time);
           }

@@ -9,6 +9,8 @@ import { setup } from '@/src/main';
 import { ref, state } from '@/src/setup/store';
 import Inventory from '@/src/ui/components/inventory/Inventory';
 import Menu from '@/src/ui/components/menu/Menu';
+import Dialog from '@/src/ui/components/Dialog';
+import Mode from '@/src/ui/components/Mode';
 
 const App: Component = () => {
   const [progress, setProgress] = createSignal(0.0);
@@ -44,8 +46,12 @@ const App: Component = () => {
 
   return (
     <>
+      <Show when={state.started && !state.isPaused}>
+        <Mode />
+      </Show>
       <Menu />
       <Inventory />
+      <Dialog />
       <Show
         when={finished()}
         fallback={

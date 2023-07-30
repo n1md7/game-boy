@@ -9,6 +9,7 @@ export class Screen extends GenericScreen {
 
     this.canvasElement = document.createElement('canvas');
     this.canvasContext = this.canvasElement.getContext('2d')!;
+    this.scene.name = 'ProjectorScreen';
   }
 
   override putImageData(imageData: ImageData) {

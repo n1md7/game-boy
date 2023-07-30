@@ -13,6 +13,7 @@ export class ProjectorDisplay extends GenericGUI {
     super(gui.addFolder('Projector'), -200, 200, 0.001);
 
     this.group = new Group();
+    this.group.name = 'Projector';
     this.model = Assets.ProjectorScreen.scene.clone();
     // Let's use Full HD resolution for the projector.
     this.screen = new Screen(1920, 1080);

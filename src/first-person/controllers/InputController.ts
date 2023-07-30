@@ -1,4 +1,4 @@
-import { inventoryToggle, pause } from '@/src/setup/store';
+import { changeCameraMode, inventoryToggle, mode, pause, toggleMode } from '@/src/setup/store';
 
 export class InputController extends EventTarget {
   private moveForward = false;
@@ -32,6 +32,12 @@ export class InputController extends EventTarget {
 
   private onKeyDown(event: KeyboardEvent) {
     event.preventDefault();
+
+    // Whitelisted keys
+    if (event.code === 'KeyM') toggleMode();
+    if (event.code === 'KeyC') changeCameraMode();
+
+    if (mode() === 'Emulator') return;
 
     if (event.code === 'KeyW') this.moveForward = true;
     if (event.code === 'KeyS') this.moveBackward = true;

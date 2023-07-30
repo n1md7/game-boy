@@ -145,6 +145,18 @@ export default function Menu() {
                 </strong>{' '}
                 to open Menu
               </p>
+              <p>
+                <strong>
+                  <kbd>M</kbd>
+                </strong>{' '}
+                to change modes between Emulator and First Person. In Emulator mode FPS movement is disabled.
+              </p>
+              <p>
+                <strong>
+                  <kbd>C</kbd>
+                </strong>{' '}
+                to change the GameBoy camera mode.
+              </p>
             </Col>
           </Row>
           <Row class="g-2 justify-content-center gy-3">
@@ -152,11 +164,11 @@ export default function Menu() {
             <Col lg={6} class="text-center">
               <p>
                 Collect all the cartridges and insert them into the console. You can find them in the game world, but{' '}
-                <strong class="text-decoration-line-through">beware of the enemies!</strong>
+                <strong class="text-decoration-line-through">beware of the enemies!</strong>. No enemies yet 😔.
               </p>
               <p>
-                Game can be played with the GameBoy controller. It can be connected to projector screen inside of the virtual
-                world
+                The game can be played with the GameBoy virtual device. It can be connected to the projector screen inside of
+                the virtual world as well.
               </p>
             </Col>
           </Row>

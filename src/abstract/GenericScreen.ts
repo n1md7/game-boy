@@ -26,6 +26,7 @@ export abstract class GenericScreen {
     this.texture = new CanvasTexture(this.canvas);
 
     this.mesh = new Mesh();
+    this.mesh.name = 'GenericScreen';
     this.mesh.geometry = new PlaneGeometry(1, height / width);
     this.mesh.material = new MeshBasicMaterial({ map: this.texture });
 
