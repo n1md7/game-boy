@@ -9,4 +9,22 @@ export class Mario extends Game {
     "Serving as the company's mascot and the eponymous protagonist of the series, " +
     'Mario has appeared in over 200 video games since his creation.';
   public readonly tags = ['platformer', 'classic', 'retro', '1980s', '2d'];
+  public readonly keys = [
+    {
+      key: 'ArrowLeft',
+      fn: 'Go left',
+    },
+    {
+      key: 'ArrowRight',
+      fn: 'Go right',
+    },
+    {
+      key: 'CTRL',
+      fn: 'Run/Fire',
+    },
+    {
+      key: 'ALT',
+      fn: 'Jump',
+    },
+  ];
 }

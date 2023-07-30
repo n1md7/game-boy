@@ -8,4 +8,26 @@ export class Digger extends Game {
     'popular in the era of the IBM PC and Commodore 64. ' +
     'It is similar in design to the 1982 arcade game Mr. Do!.';
   public readonly tags = ['arcade', 'classic', 'retro', '1980s', '2d'];
+  public readonly keys = [
+    {
+      key: 'ArrowLeft',
+      fn: 'Go left',
+    },
+    {
+      key: 'ArrowRight',
+      fn: 'Go right',
+    },
+    {
+      key: 'ArrowUp',
+      fn: 'Go up',
+    },
+    {
+      key: 'ArrowDown',
+      fn: 'Go down',
+    },
+    {
+      key: 'Space',
+      fn: 'Start/Pause',
+    },
+  ];
 }

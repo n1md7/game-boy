@@ -31,13 +31,21 @@ export const [inventory, setInventory] = createStore<Inventory>({
 
 type Ref = {
   player?: PlayerController;
+  cartridge?: Cartridge;
 };
 export const [ref, setRef] = createStore<Ref>({});
 
 type Mode = 'Emulator' | 'First Person';
 export const [mode, setMode] = createSignal<Mode>('First Person');
 export const toggleMode = () => {
-  setMode((mode) => (mode === 'First Person' ? 'Emulator' : 'First Person'));
+  setMode((mode) => {
+    if (mode === 'Emulator') {
+      inventory.gameBoy?.pause();
+      return 'First Person';
+    }
+    inventory.gameBoy?.resume();
+    return 'Emulator';
+  });
 };
 
 type CameraMode = 1 | 2 | 3;
@@ -52,8 +60,7 @@ export const changeCameraMode = () => {
 export const inventoryToggle = () => {
   setShow({ menu: false, inventory: true, modal: false });
   setState('isPaused', (isPaused) => {
-    if (isPaused) inventory.gameBoy?.resume();
-    else inventory.gameBoy?.pause();
+    inventory.gameBoy?.pause();
     return !isPaused;
   });
 };
@@ -61,7 +68,7 @@ export const inventoryToggle = () => {
 export const resume = () => {
   setShow({ menu: false, inventory: false, modal: false });
   setState({ isPaused: false });
-  inventory.gameBoy?.resume();
+  if (mode() === 'Emulator') inventory.gameBoy?.resume();
 };
 
 export const pause = () => {

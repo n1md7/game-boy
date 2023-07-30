@@ -1,5 +1,5 @@
 import { Button, Card, Image, Col, Row, Badge } from 'solid-bootstrap';
-import { inventory, resume, showModal } from '@/src/setup/store';
+import { inventory, resume, setRef, showModal } from '@/src/setup/store';
 import { Show } from 'solid-js';
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 
@@ -12,7 +12,9 @@ export default function Collection() {
 
     inventory.gameBoy.removeCartridge();
     resume();
-    inventory.gameBoy.insertCartridge(cartridge).then();
+    inventory.gameBoy.insertCartridge(cartridge).then(() => {
+      setRef({ cartridge });
+    });
   };
 
   return (
@@ -82,6 +84,12 @@ export default function Collection() {
                         {cartridge.tags.map((tag, idx) => (
                           <Badge bg={getBadge(idx)} class="mx-1 text-uppercase">
                             <strong>{tag}</strong>
+                          </Badge>
+                        ))}
+                        <hr />
+                        {cartridge.keys.map(({ key, fn }) => (
+                          <Badge bg="secondary" class="mx-1">
+                            <em class="text-info-emphasis">{key}</em> - <span>{fn}</span>
                           </Badge>
                         ))}
                       </Card.Text>

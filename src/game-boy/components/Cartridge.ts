@@ -1,4 +1,4 @@
-import { Game } from '@/src/game-boy/abstract/Game';
+import { Game, GameKey } from '@/src/game-boy/abstract/Game';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
 import { SphereGeometry, AxesHelper, Box3, ShaderMaterial, Texture } from 'three';
 import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
@@ -17,6 +17,7 @@ export abstract class Cartridge extends Group {
   public readonly description: string;
   public readonly scene: Group;
   public readonly tags: string[] = [];
+  public readonly keys: GameKey[] = [];
 
   private readonly model: Group;
   private readonly sphere: Mesh;
@@ -28,6 +29,7 @@ export abstract class Cartridge extends Group {
     this.game = game;
     this.name = game.name;
     this.tags = game.tags;
+    this.keys = game.keys;
     this.thumbnail = game.image;
     this.description = game.description;
     this.scene = new Group();

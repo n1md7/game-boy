@@ -3,10 +3,14 @@ import { Screen } from '@/src/game-boy/components/Screen';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
 import { Texture } from 'three';
 
+export type GameKey = { key: string; fn: string };
+
 export abstract class Game {
   public abstract readonly name: Cartridges;
   public abstract readonly tags: string[];
+  public abstract readonly keys: GameKey[];
   public abstract readonly description: string;
+  public readonly extraKeys: Record<string, number> = {};
 
   protected readonly rootPath = import.meta.env.GAME_BASE_URL || '.';
 
@@ -81,12 +85,12 @@ export abstract class Game {
   }
 
   private onKeyDown(e: KeyboardEvent) {
-    const keyCode = emulatorsUi.controls.domToKeyCode(e.keyCode);
+    const keyCode = emulatorsUi.controls.domToKeyCode(this.key(e.keyCode));
     this.commandInterface.sendKeyEvent(keyCode, true);
   }
 
   private onKeyUp(e: KeyboardEvent) {
-    const keyCode = emulatorsUi.controls.domToKeyCode(e.keyCode);
+    const keyCode = emulatorsUi.controls.domToKeyCode(this.key(e.keyCode));
     this.commandInterface.sendKeyEvent(keyCode, false);
   }
 
@@ -115,5 +119,9 @@ export abstract class Game {
 
     const imageData = new ImageData(this.rgba, width, height);
     this.screen.putImageData(imageData);
+  }
+
+  private key(key: number) {
+    return this.extraKeys[key] || key;
   }
 }
