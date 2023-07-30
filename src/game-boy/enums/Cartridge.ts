@@ -4,4 +4,6 @@ export enum Cartridges {
   Mario = 'Mario',
   Quake = 'Quake',
   Duke = 'Duke',
+  DonkeyKong = 'DonkeyKong',
+  Wolfenstein = 'Wolfenstein',
 }

@@ -14,6 +14,7 @@ import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
 import { inventory, pause, resume, setRef, setState, show, showModal, state } from '@/src/setup/store';
+import { WolfensteinCartridge } from '@/src/game-boy/cartridges/WolfensteinCartridge';
 
 export function setup() {
   const FPS = 60;
@@ -40,16 +41,18 @@ export function setup() {
   const quakeCartridge = new QuakeCartridge(Assets.Cartridge, Assets.Quake);
   const diggerCartridge = new DiggerCartridge(Assets.Cartridge, Assets.Digger);
   const dukeCartridge = new DukeCartridge(Assets.Cartridge, Assets.Duke);
+  const wolfensteinCartridge = new WolfensteinCartridge(Assets.Cartridge, Assets.Wolfenstein);
 
   world.fromGraphNode(marioCartridge);
 
-  const cartridges = [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge];
+  const cartridges = [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge, wolfensteinCartridge];
 
   quakeCartridge.scene.position.set(3.477, 0.763, -1.134);
   diggerCartridge.scene.position.set(-0.916, 1.603, 3.562);
   marioCartridge.scene.position.set(-0.636, 0.5, -1.476);
   doomCartridge.scene.position.set(-0.916, 1.603, -0.7);
   dukeCartridge.scene.position.set(0.763, 1.323, 5.801);
+  wolfensteinCartridge.scene.position.set(1.763, 1.323, 5.801);
 
   scene.room.add(...cartridges.map((cartridge) => cartridge.scene));
 
