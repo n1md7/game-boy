@@ -19,12 +19,22 @@ export class Mario extends Game {
       fn: 'Go right',
     },
     {
-      key: 'CTRL',
-      fn: 'Run/Fire',
+      key: 'CTRL/SHIFT',
+      fn: 'Run',
     },
     {
-      key: 'ALT',
+      key: 'Z',
+      fn: 'Fire',
+    },
+    {
+      key: 'ALT/Space/X',
       fn: 'Jump',
     },
   ];
+  public readonly extraKeys = {
+    '32': 18, // ALT -> Space = Jump
+    '88': 18, // X -> ALT = Jump
+    '90': 32, // Z -> Space = Fire
+    '16': 17, // SHIFT -> CTRL = Run
+  };
 }
