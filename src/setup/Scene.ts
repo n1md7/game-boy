@@ -6,6 +6,7 @@ import { ProjectorDisplay } from '@/src/projector-display/ProjectorDisplay';
 import { Assets } from '@/src/assets';
 
 export default class Scene extends ThreeScene {
+  readonly '2ndScene' = new ThreeScene();
   readonly light!: AmbientLight;
   readonly room = new Group();
   readonly projectorScreen = new ProjectorDisplay();

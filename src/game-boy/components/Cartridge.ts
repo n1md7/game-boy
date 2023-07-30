@@ -10,6 +10,8 @@ import fragmentShader from '@/src/game-boy/components/shaders/sphere/fragmentSha
 export abstract class Cartridge extends Group {
   static DEBUG = false;
 
+  public equipped = false;
+
   public readonly game: Game;
   public readonly name: Cartridges;
   public readonly image: Mesh;

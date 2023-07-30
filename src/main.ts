@@ -81,14 +81,19 @@ export function setup() {
       if (timestamp.delta >= DELAY) {
         if (!state.isPaused && state.started) {
           player.update(delta);
-          gameBoy.update(time);
 
-          if (!inventory.gameBoy && player.intersects(gameBoy)) {
-            player.pickUp(gameBoy);
-            showModal('Info', 'You picked up the Game Boy device. Find cartridges to play.');
+          if (!gameBoy.equipped) {
+            gameBoy.update(time);
+            if (player.intersects(gameBoy)) {
+              player.pickUp(gameBoy);
+              gameBoy.scene.removeFromParent();
+              scene['2ndScene'].add(gameBoy.scene);
+              gameBoy.scene.visible = true;
+              showModal('Info', 'You picked up the Game Boy device. Find cartridges to play.');
+            }
           }
           for (const cartridge of cartridges) {
-            if (!cartridge.scene.visible) continue;
+            if (cartridge.equipped) continue;
 
             if (player.intersects(cartridge)) {
               player.pickUp(cartridge);
@@ -111,7 +116,14 @@ export function setup() {
 
         timestamp.update();
 
+        renderer.clear();
         renderer.render(scene, camera);
+        renderer.clearDepth();
+
+        if (gameBoy.equipped) {
+          gameBoy.adjustBy(camera);
+          renderer.render(scene['2ndScene'], camera);
+        }
       }
 
       Debug.enabled() && performance.end();

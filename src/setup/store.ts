@@ -48,14 +48,7 @@ export const toggleMode = () => {
   });
 };
 
-type CameraMode = 1 | 2 | 3;
-export const [cameraMode, setCameraMode] = createSignal<CameraMode>(1);
-export const changeCameraMode = () => {
-  setCameraMode((mode): CameraMode => {
-    if (mode === 3) return 1;
-    return (mode + 1) as CameraMode;
-  });
-};
+export const changeCameraMode = () => inventory.gameBoy?.changeCamera();
 
 export const inventoryToggle = () => {
   setShow({ menu: false, inventory: true, modal: false });

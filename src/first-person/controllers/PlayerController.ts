@@ -31,6 +31,7 @@ export class PlayerController {
   pickUp(cartridge: Cartridge): void;
   pickUp(entity: Cartridge | GameBoy): void {
     entity.scene.visible = false;
+    entity.equipped = true;
     if (entity instanceof GameBoy) setInventory('gameBoy', entity);
     else {
       setInventory('cartridges', (cartridges) => [...cartridges, entity]);

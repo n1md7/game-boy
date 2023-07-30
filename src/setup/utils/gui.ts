@@ -9,11 +9,11 @@ screen.add({ pointerLock }, 'pointerLock').name('Pointer Lock');
 
 gui.show(Debug.enabled());
 
-export const applyPosition = (gui: GUI, object: Vector3) => {
+export const applyPosition = (gui: GUI, object: Vector3, min = -20, max = 20, step = 0.001) => {
   const folder = gui.addFolder('Position');
-  folder.add(object, 'x', -20, 240, 0.001);
-  folder.add(object, 'y', -20, 240, 0.001);
-  folder.add(object, 'z', -20, 240, 0.001);
+  folder.add(object, 'x', min, max, step);
+  folder.add(object, 'y', min, max, step);
+  folder.add(object, 'z', min, max, step);
   folder.close();
 };
 
