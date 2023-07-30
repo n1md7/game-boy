@@ -85,13 +85,7 @@ export function setup() {
 
           if (!inventory.gameBoy && player.intersects(gameBoy)) {
             player.pickUp(gameBoy);
-            showModal(
-              'Info',
-              'You picked up the Game Boy device. Press <kbd>M</kbd> to play it. ' +
-                'You can use the same key to switch between First Person and Emulator modes. ' +
-                'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
-                'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.'
-            );
+            showModal('Info', 'You picked up the Game Boy device. Find cartridges to play.');
           }
           for (const cartridge of cartridges) {
             if (!cartridge.scene.visible) continue;
@@ -103,7 +97,10 @@ export function setup() {
                 showModal(
                   'Info',
                   `You picked up <b>${cartridge.name}</b> cartridge. ` +
-                    `Press <kbd>TAB</kbd> to check the inventory. You can select the cartridge from the inventory and play it.`
+                    `Press <kbd>TAB</kbd> to check the inventory. You can select the cartridge from the inventory and play it. <br> <br>` +
+                    'You can use the <kbd>M</kbd> key to switch between First Person and Emulator modes. ' +
+                    'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
+                    'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.'
                 );
               }
             }
