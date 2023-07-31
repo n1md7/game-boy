@@ -43,8 +43,6 @@ export function setup() {
   const dukeCartridge = new DukeCartridge(Assets.Cartridge, Assets.Duke);
   const wolfensteinCartridge = new WolfensteinCartridge(Assets.Cartridge, Assets.Wolfenstein);
 
-  world.fromGraphNode(marioCartridge);
-
   const cartridges = [marioCartridge, doomCartridge, quakeCartridge, diggerCartridge, dukeCartridge, wolfensteinCartridge];
 
   quakeCartridge.scene.position.set(3.477, 0.763, -1.134);
