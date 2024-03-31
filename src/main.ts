@@ -76,9 +76,13 @@ export function setup() {
       });
     })();
     (function gameLoop() {
+      requestAnimationFrame(gameLoop);
       Debug.enabled() && performance.start();
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
+
+      if (!state.isPaused && state.started) player.update(delta);
+
       if (timestamp.delta >= DELAY) {
         if (!state.isPaused && state.started) {
           player.update(delta);
@@ -125,10 +129,9 @@ export function setup() {
           gameBoy.adjustBy(camera);
           renderer.render(scene['2ndScene'], camera);
         }
-      }
 
-      Debug.enabled() && performance.end();
-      requestAnimationFrame(gameLoop);
+        Debug.enabled() && performance.end();
+      }
     })();
   }
 }
