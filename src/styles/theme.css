@@ -1,0 +1,62 @@
+@font-face {
+  font-family: 'Kenpixel';
+  src: url('/fonts/ttf/kenpixel.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body.gb-theme {
+  --gb-font-body: 'Consolas', 'SFMono-Regular', ui-monospace, Menlo, monospace;
+  --gb-font-pixel: 'Kenpixel', var(--gb-font-body);
+
+  /* Surfaces */
+  --gb-bg: #0b0d0a;
+  --gb-panel: #171a14;
+  --gb-panel-raised: #20241c;
+  --gb-border: #3a4030;
+  --gb-border-strong: #545c44;
+
+  /* Text */
+  --gb-text: #e7ecd9;
+  --gb-text-muted: #8b9480;
+  --gb-text-dim: #5b6353;
+
+  /* Accent: classic DMG LCD green, used sparingly for highlights/progress/focus */
+  --gb-accent: #9bbc0f;
+  --gb-accent-strong: #c6e26a;
+  --gb-accent-dim: #4d6612;
+
+  /* Secondary accent: primary CTAs */
+  --gb-cta: #e0a63a;
+  --gb-cta-strong: #f2c368;
+  --gb-cta-text: #241a06;
+
+  /* Semantic */
+  --gb-danger: #d1495b;
+  --gb-danger-bg: #3a1418;
+  --gb-warning: #d9a441;
+  --gb-warning-bg: #382c11;
+  --gb-info: #5fa8a0;
+  --gb-info-bg: #122b28;
+  --gb-success: var(--gb-accent);
+  --gb-success-bg: var(--gb-accent-dim);
+
+  --gb-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --gb-backdrop: rgba(4, 6, 3, 0.82);
+
+  /* Remap Bootstrap variables consumed by solid-bootstrap-rendered elements */
+  --bs-body-bg: var(--gb-bg);
+  --bs-body-color: var(--gb-text);
+  --bs-border-color: var(--gb-border);
+  --bs-card-bg: var(--gb-panel);
+  --bs-modal-bg: var(--gb-panel);
+  --bs-secondary-color: var(--gb-text-muted);
+  --bs-tertiary-bg: var(--gb-panel-raised);
+  --bs-primary: var(--gb-cta);
+  --bs-primary-rgb: 224, 166, 58;
+  --bs-danger: var(--gb-danger);
+  --bs-warning: var(--gb-warning);
+  --bs-info: var(--gb-info);
+  --bs-success: var(--gb-success);
+}

@@ -1,3 +1,4 @@
+import '@/src/styles/theme.css';
 import '@/src/styles/style.css';
 
 import type { Component } from 'solid-js';
@@ -55,8 +56,8 @@ const App: Component = () => {
       <Show
         when={finished()}
         fallback={
-          <div id="loading" class="text-center w-75">
-            <h3 class="text-muted">Assets are loading</h3>
+          <div class="gb-boot">
+            <h3 class="gb-boot__title">Assets are loading</h3>
             <div class="progress" role="progressbar">
               <div class="progress-bar progress-bar-striped progress-bar-animated" style={{ width: `${progress()}%` }}>
                 {progress().toFixed(2)}
@@ -66,16 +67,12 @@ const App: Component = () => {
         }
       >
         <Show when={!state.started}>
-          <div id="loading" class="container">
-            <div class="row">
-              <div class="col d-flex justify-content-center">
-                <Show when={!startClicked()} fallback={'Loading...'}>
-                  <button class="btn btn-outline-dark" onClick={handleStart}>
-                    Start Game
-                  </button>
-                </Show>
-              </div>
-            </div>
+          <div class="gb-boot">
+            <Show when={!startClicked()} fallback={<h3 class="gb-boot__title">Loading...</h3>}>
+              <button class="btn btn-primary gb-boot__start" onClick={handleStart}>
+                Start Game
+              </button>
+            </Show>
           </div>
         </Show>
       </Show>

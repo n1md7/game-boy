@@ -18,96 +18,51 @@ export default function Collection() {
   };
 
   return (
-    <>
-      <Show
-        when={inventory.gameBoy}
-        fallback={
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <h3 class="text-muted text-center">No Game Boy collected</h3>
-          </div>
-        }
-      >
-        <div class="row m-0 gy-4 mb-3">
-          <div class="col">
-            <Row class="g-4 justify-content-center">
-              <Card style={{ width: '48rem' }}>
-                <Card.Body class="px-0">
-                  <Card.Title>
-                    <strong>The Game Boye</strong>
-                  </Card.Title>
-                  <Card.Subtitle class="mb-2 text-muted">You have collected it</Card.Subtitle>
-                  <Image src="images/game-boy.png" class="w-100" thumbnail />
-                  <Card.Text>
-                    <p class="text-secondary small mt-2">
-                      The Game Boy is a popular handheld gaming console that was released by Nintendo in 1989. It is one of the
-                      most iconic and influential gaming devices in the history of video games. The Game Boy was designed by
-                      Gunpei Yokoi and his team at Nintendo.
-                    </p>
-
-                    <hr />
-
-                    <p>Choose cartridge below to play the game.</p>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Row>
-          </div>
+    <Show
+      when={inventory.cartridges.length > 0}
+      fallback={
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <h3 class="gb-empty-state text-center">No cartridges collected</h3>
         </div>
-      </Show>
-      <Show
-        when={inventory.cartridges.length > 0}
-        fallback={
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <h3 class="text-muted text-center">No cartridges collected</h3>
-          </div>
-        }
-      >
-        <div class="row m-0 gy-4">
-          <div class="row">
-            <div class="col">
-              <h3 class="text-muted text-center">Your cartridges</h3>
-            </div>
-          </div>
-          <div class="col">
-            <Row class="g-4 justify-content-center">
-              {inventory.cartridges.map((cartridge) => (
-                <Col xs={12} sm={8} md={6} lg={4} xl={3} xxl={3}>
-                  <Card>
-                    <Image
-                      src={(cartridge.thumbnail.image as HTMLImageElement).src}
-                      class="card-img-top"
-                      style={{ 'max-height': '24rem' }}
-                    />
-                    <Card.Body>
-                      <Card.Title>
-                        <strong>{cartridge.name}</strong>
-                      </Card.Title>
-                      <Card.Text>
-                        <p class="text-secondary small">{cartridge.description}</p>
-                        <hr />
-                        {cartridge.tags.map((tag, idx) => (
-                          <Badge bg={getBadge(idx)} class="mx-1 text-uppercase">
-                            <strong>{tag}</strong>
-                          </Badge>
-                        ))}
-                        <hr />
-                        {cartridge.keys.map(({ key, fn }) => (
-                          <Badge bg="secondary" class="mx-1">
-                            <em class="text-info-emphasis">{key}</em> - <span>{fn}</span>
-                          </Badge>
-                        ))}
-                      </Card.Text>
-                      <Button variant="outline-dark" size="lg" class={'w-100'} onClick={handleCartridgeInsert(cartridge)}>
-                        Insert cartridge and play
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          </div>
-        </div>
-      </Show>
-    </>
+      }
+    >
+      <h4 class="gb-section-heading mb-3">Your Cartridges</h4>
+      <Row class="g-4 justify-content-center">
+        {inventory.cartridges.map((cartridge) => (
+          <Col xs={12} sm={10} md={6} lg={6} xl={4} class="d-flex">
+            <Card class="gb-card gb-card--cartridge h-100 flex-fill">
+              <Image src={(cartridge.thumbnail.image as HTMLImageElement).src} class="card-img-top" />
+              <Card.Body class="d-flex flex-column flex-grow-1">
+                <Card.Title>
+                  <strong>{cartridge.name}</strong>
+                </Card.Title>
+                <div class="gb-card__text flex-grow-1">
+                  <p class="text-secondary small gb-card__description">{cartridge.description}</p>
+                  <hr />
+                  <div class="gb-badge-row">
+                    {cartridge.tags.map((tag, idx) => (
+                      <Badge bg={getBadge(idx)} class="text-uppercase">
+                        <strong>{tag}</strong>
+                      </Badge>
+                    ))}
+                  </div>
+                  <hr />
+                  <div class="gb-badge-row gb-badge-row--keys">
+                    {cartridge.keys.map(({ key, fn }) => (
+                      <Badge bg="secondary" class="gb-key-badge">
+                        <em class="text-info-emphasis">{key}</em> - <span>{fn}</span>
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <Button variant="primary" size="lg" class={'w-100 mt-3'} onClick={handleCartridgeInsert(cartridge)}>
+                  Insert cartridge and play
+                </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Show>
   );
 }
