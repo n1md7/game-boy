@@ -76,14 +76,13 @@ export function setup() {
       });
     })();
     (function gameLoop() {
-      requestAnimationFrame(gameLoop);
       Debug.enabled() && performance.start();
-      const delta = clock.getDelta();
-      const time = clock.getElapsedTime();
-
-      if (!state.isPaused && state.started) player.update(delta);
-
       if (timestamp.delta >= DELAY) {
+        // INFO: getDelta() must only be called when a tick is actually consumed,
+        // otherwise higher refresh-rate displays (eg. 120Hz) silently halve the
+        // simulated delta since a discarded rAF tick would already reset the clock.
+        const delta = clock.getDelta();
+        const time = clock.getElapsedTime();
         if (!state.isPaused && state.started) {
           player.update(delta);
 
@@ -110,7 +109,7 @@ export function setup() {
                     `Press <kbd>TAB</kbd> to check the inventory. You can select the cartridge from the inventory and play it. <br> <br>` +
                     'You can use the <kbd>M</kbd> key to switch between First Person and Emulator modes. ' +
                     'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
-                    'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.'
+                    'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.',
                 );
               }
             }
@@ -129,9 +128,10 @@ export function setup() {
           gameBoy.adjustBy(camera);
           renderer.render(scene['2ndScene'], camera);
         }
-
-        Debug.enabled() && performance.end();
       }
+
+      Debug.enabled() && performance.end();
+      requestAnimationFrame(gameLoop);
     })();
   }
 }
