@@ -59,7 +59,7 @@ const App: Component = () => {
         when={finished()}
         fallback={
           <div class="gb-boot">
-            <h3 class="gb-boot__title">Assets are loading</h3>
+            <h3 class="gb-boot__title">Loading...</h3>
             <div class="progress" role="progressbar">
               <div class="progress-bar progress-bar-striped progress-bar-animated" style={{ width: `${progress()}%` }}>
                 {progress().toFixed(2)}

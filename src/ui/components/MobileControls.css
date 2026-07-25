@@ -12,47 +12,71 @@
 }
 
 .toolbar-btn {
-  padding: 8px 14px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
+  padding: 8px 12px;
+  background: var(--gb-panel-raised, #20241c);
+  color: var(--gb-text, #e7ecd9);
+  border: 2px solid var(--gb-border-strong, #545c44);
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: bold;
+  font-family: var(--gb-font-pixel, monospace);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   cursor: pointer;
   transition:
     transform 0.1s ease,
     background 0.1s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--gb-shadow, 0 2px 8px rgba(0, 0, 0, 0.3));
   white-space: nowrap;
 }
 
 .toolbar-btn:active {
   transform: scale(0.95);
+  background: var(--gb-accent-dim, #4d6612);
 }
 
 .toolbar-btn.mode-btn {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
+  border-color: var(--gb-accent-strong, #c6e26a);
+  color: var(--gb-accent-strong, #c6e26a);
 }
 
 .toolbar-btn.inventory-btn {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  border-color: var(--gb-info, #5fa8a0);
+  color: var(--gb-info, #5fa8a0);
 }
 
 .toolbar-btn.pause-btn {
-  background: linear-gradient(135deg, #fa709a, #fee140);
+  border-color: var(--gb-cta, #e0a63a);
+  color: var(--gb-cta, #e0a63a);
+}
+
+.toolbar-btn.fullscreen-btn {
+  border-color: var(--gb-text-muted, #8b9480);
+  color: var(--gb-text-muted, #8b9480);
 }
 
 .toolbar-btn.action-btn {
   padding: 6px 10px;
-  font-size: 11px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  font-size: 10px;
+  border-color: var(--gb-border-strong, #545c44);
 }
 
 .toolbar-actions {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.toolbar-hint {
+  width: 100%;
+  font-family: var(--gb-font-pixel, monospace);
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  color: var(--gb-text-muted, #8b9480);
+  background: rgba(11, 13, 10, 0.6);
+  border: 1px solid var(--gb-border, #3a4030);
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-top: 2px;
 }
 
 .mobile-controls {
@@ -83,6 +107,19 @@
 
 .joystick-zone:last-of-type {
   right: 20px;
+}
+
+/* Portrait: the whole left two-thirds of the screen is the touch catcher for
+   the dynamic joystick (right side stays free for SHOOT/JUMP). It needs its
+   own pointer-events since the fullscreen `.mobile-controls` wrapper is
+   deliberately click-through. */
+.joystick-zone-portrait {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 65%;
+  height: 100%;
+  pointer-events: auto;
 }
 
 /* Portrait Mode */

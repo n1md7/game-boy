@@ -1,20 +1,23 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js';
-import { ref, state, inventoryToggle, pause, resume, toggleMode } from '@/src/setup/store';
+import { ref, state, mode, inventoryToggle, pause, resume, toggleMode } from '@/src/setup/store';
+import { isPortrait, isTouchDevice } from '@/src/setup/utils/device';
 import nipplejs from 'nipplejs';
 import '@/src/ui/components/MobileControls.css';
 
 export default function MobileControls() {
-  let containerRef: HTMLDivElement | undefined;
+  let portraitZoneRef: HTMLDivElement | undefined;
   let leftJoystickRef: HTMLDivElement | undefined;
   let rightJoystickRef: HTMLDivElement | undefined;
   let shootButtonRef: HTMLButtonElement | undefined;
   let jumpButtonRef: HTMLButtonElement | undefined;
 
   const [extraKeys, setExtraKeys] = createSignal<Array<{ key: string; label: string }>>([]);
-  const [joysticks, setJoysticks] = createSignal<any[]>([]);
-
-  const isPortrait = () => window.innerHeight > window.innerWidth;
-  const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  // Plain (non-reactive) bookkeeping: this is imperative nipplejs instance state,
+  // never rendered. Using a signal here would make setupControls() track and
+  // write the same signal from inside a createEffect, causing an infinite loop.
+  let activeJoysticksRef: any[] = [];
+  const [isFullscreen, setIsFullscreen] = createSignal(!!document.fullscreenElement);
+  const [portrait, setPortrait] = createSignal(isPortrait());
 
   createEffect(() => {
     if (ref.cartridge?.keys) {
@@ -103,87 +106,112 @@ export default function MobileControls() {
     });
   };
 
-  onMount(() => {
-    if (!isTouchDevice()) return;
+  const destroyJoysticks = () => {
+    activeJoysticksRef.forEach((js: any) => {
+      if (js && typeof js.destroy === 'function') js.destroy();
+    });
+    activeJoysticksRef = [];
+  };
 
-    const setupControls = () => {
-      // Clean up any existing joysticks
-      joysticks().forEach((js: any) => {
-        if (js && typeof js.destroy === 'function') {
-          js.destroy();
-        }
-      });
-      setJoysticks([]);
+  const setupControls = () => {
+    setPortrait(isPortrait());
+    destroyJoysticks();
 
-      const activeJoysticks: any[] = [];
+    if (!isTouchDevice() || !state.started || state.isPaused) return;
 
-      if (isPortrait()) {
-        // Portrait: single joystick in center
-        if (containerRef) {
-          const joystick = createJoystick({
-            zone: containerRef,
-            color: 'blue',
-            size: 120,
-            multitouch: false,
-            maxNumberOfNipples: 1,
-            mode: 'dynamic',
-            position: { top: '60%', left: '50%' },
-            restOpacity: 0.5,
-          });
+    const activeJoysticks: any[] = [];
 
-          handleJoystickMove(joystick);
-          activeJoysticks.push(joystick);
-        }
-      } else {
-        // Landscape: left joystick for movement, right for rotation
-        if (leftJoystickRef) {
-          const leftJoystick = createJoystick({
-            zone: leftJoystickRef,
-            color: 'blue',
-            size: 100,
-            multitouch: false,
-            maxNumberOfNipples: 1,
-            mode: 'dynamic',
-            restOpacity: 0.5,
-          });
+    if (isPortrait()) {
+      // Portrait: single dynamic joystick, appears wherever the user first touches
+      if (portraitZoneRef) {
+        const joystick = createJoystick({
+          zone: portraitZoneRef,
+          color: 'blue',
+          size: 120,
+          multitouch: false,
+          maxNumberOfNipples: 1,
+          mode: 'dynamic',
+          restOpacity: 0.5,
+        });
 
-          handleJoystickMove(leftJoystick);
-          activeJoysticks.push(leftJoystick);
-        }
+        handleJoystickMove(joystick);
+        activeJoysticks.push(joystick);
+      }
+    } else {
+      // Landscape: left joystick for movement, right for rotation
+      if (leftJoystickRef) {
+        const leftJoystick = createJoystick({
+          zone: leftJoystickRef,
+          color: 'blue',
+          size: 100,
+          multitouch: false,
+          maxNumberOfNipples: 1,
+          mode: 'dynamic',
+          restOpacity: 0.5,
+        });
 
-        if (rightJoystickRef) {
-          const rightJoystick = createJoystick({
-            zone: rightJoystickRef,
-            color: 'red',
-            size: 100,
-            multitouch: false,
-            maxNumberOfNipples: 1,
-            mode: 'dynamic',
-            restOpacity: 0.5,
-          });
-
-          handleRotationJoystick(rightJoystick);
-          activeJoysticks.push(rightJoystick);
-        }
+        handleJoystickMove(leftJoystick);
+        activeJoysticks.push(leftJoystick);
       }
 
-      setJoysticks(activeJoysticks);
-    };
+      if (rightJoystickRef) {
+        const rightJoystick = createJoystick({
+          zone: rightJoystickRef,
+          color: 'red',
+          size: 100,
+          multitouch: false,
+          maxNumberOfNipples: 1,
+          mode: 'dynamic',
+          restOpacity: 0.5,
+        });
 
+        handleRotationJoystick(rightJoystick);
+        activeJoysticks.push(rightJoystick);
+      }
+    }
+
+    activeJoysticksRef = activeJoysticks;
+  };
+
+  // Re-run whenever the game starts/pauses, since Show unmounts/remounts the
+  // zone elements and any joystick bound to the old nodes would be detached.
+  createEffect(() => {
+    state.started;
+    state.isPaused;
     setupControls();
+  });
+
+  onMount(() => {
     window.addEventListener('orientationchange', setupControls);
     window.addEventListener('resize', setupControls);
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
 
     onCleanup(() => {
       window.removeEventListener('orientationchange', setupControls);
       window.removeEventListener('resize', setupControls);
-      joysticks().forEach((js: any) => {
-        if (js && typeof js.destroy === 'function') {
-          js.destroy();
-        }
-      });
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      destroyJoysticks();
     });
   });
+
+  const handleFullscreenChange = () => setIsFullscreen(!!document.fullscreenElement);
+
+  const handleFullscreenToggle = async () => {
+    if (!document.fullscreenElement) {
+      try {
+        await document.documentElement.requestFullscreen();
+        if (screen.orientation && 'lock' in screen.orientation) {
+          // Best-effort: only Android Chrome honors this, and only in fullscreen.
+          await (screen.orientation as any).lock('landscape').catch(() => {});
+        }
+      } catch (error) {
+        console.warn(error);
+      }
+    } else {
+      await document.exitFullscreen().catch(() => {});
+    }
+  };
 
   const handleShootStart = () => {
     if (ref.cartridge?.game) ref.cartridge.game.sendKeyPress(keyMap.shoot, true);
@@ -223,13 +251,20 @@ export default function MobileControls() {
     <Show when={state.started && isTouchDevice()}>
       <div class="mobile-controls-toolbar">
         <button class="toolbar-btn mode-btn" onClick={toggleMode} title="Toggle between First Person and Emulator mode">
-          MODE
+          {mode() === 'Emulator' ? 'MODE: EMU' : 'MODE: FP'}
         </button>
         <button class="toolbar-btn inventory-btn" onClick={inventoryToggle} title="Open inventory">
           INVENTORY
         </button>
         <button class="toolbar-btn pause-btn" onClick={handlePauseToggle} title="Pause or Resume">
           {state.isPaused ? 'RESUME' : 'PAUSE'}
+        </button>
+        <button
+          class="toolbar-btn fullscreen-btn"
+          onClick={handleFullscreenToggle}
+          title="Toggle fullscreen (enables landscape lock on supported devices)"
+        >
+          {isFullscreen() ? 'EXIT FULL' : 'FULLSCREEN'}
         </button>
         <Show when={extraKeys().length > 0}>
           <div class="toolbar-actions">
@@ -248,11 +283,15 @@ export default function MobileControls() {
             })}
           </div>
         </Show>
+        <Show when={portrait() && !isFullscreen()}>
+          <div class="toolbar-hint">Rotate your device, or tap FULLSCREEN, for landscape play</div>
+        </Show>
       </div>
       <Show when={!state.isPaused}>
-        <div class="mobile-controls" ref={containerRef}>
+        <div class="mobile-controls">
           {/* Portrait Mode */}
-          <Show when={isPortrait()}>
+          <Show when={portrait()}>
+            <div class="joystick-zone-portrait" ref={portraitZoneRef}></div>
             <div class="mobile-buttons portrait">
               <button
                 ref={shootButtonRef}
@@ -278,7 +317,7 @@ export default function MobileControls() {
           </Show>
 
           {/* Landscape Mode */}
-          <Show when={!isPortrait()}>
+          <Show when={!portrait()}>
             <div class="joystick-container landscape">
               <div class="joystick-zone" ref={leftJoystickRef} style={{ left: '0', bottom: '0' }}></div>
               <div class="joystick-zone" ref={rightJoystickRef} style={{ right: '0', bottom: '0' }}></div>
