@@ -1,6 +1,6 @@
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 import { Doom } from '@/src/game-boy/games/Doom';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Texture } from 'three';
 
 export class DoomCartridge extends Cartridge {
