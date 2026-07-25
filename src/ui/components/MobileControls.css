@@ -22,6 +22,7 @@
   letter-spacing: 0.5px;
   text-transform: uppercase;
   cursor: pointer;
+  touch-action: manipulation;
   transition:
     transform 0.1s ease,
     background 0.1s ease;
@@ -86,6 +87,10 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+  /* Belt-and-suspenders: covers every descendant zone/button, so a native
+     scroll/pan/zoom gesture can never hijack a touch mid-drag and stall the
+     joystick (the browser would fire pointercancel instead of pointermove). */
+  touch-action: none;
   z-index: 100;
 }
 
@@ -94,21 +99,6 @@
 }
 
 /* Joystick Zones */
-.joystick-zone {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  bottom: 20px;
-}
-
-.joystick-zone:first-child {
-  left: 20px;
-}
-
-.joystick-zone:last-of-type {
-  right: 20px;
-}
-
 /* Portrait: the whole left two-thirds of the screen is the touch catcher for
    the dynamic joystick (right side stays free for SHOOT/JUMP). It needs its
    own pointer-events since the fullscreen `.mobile-controls` wrapper is
@@ -120,6 +110,24 @@
   width: 65%;
   height: 100%;
   pointer-events: auto;
+}
+
+/* Landscape: generous half-screen catch zones rather than small corner
+   squares, so a thumb landing slightly off-center still lands in the zone
+   instead of falling through to the canvas. */
+.joystick-zone {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 45%;
+}
+
+.joystick-zone--left {
+  left: 0;
+}
+
+.joystick-zone--right {
+  right: 0;
 }
 
 /* Portrait Mode */
@@ -188,23 +196,30 @@
   background: linear-gradient(135deg, #44b4a6, #3a9a8c);
 }
 
-/* Nipple.js overrides */
-.nipple {
-  opacity: 0.6 !important;
+/* nipplejs overrides.
+   NOTE: this library's actual root element class is `.joystick` (with `.back`
+   and `.front` children) — NOT `.nipple`, despite the package name. Confirmed
+   via DOM inspection of a live instance; there is no `.nipple` class anywhere
+   in this version, so styling that targeted it was silently dead.
+
+   `!important` is required throughout: the library sets opacity/background
+   directly via `element.style.x = ...` (inline), which otherwise beats any
+   stylesheet rule regardless of selector specificity. Dynamic-mode joysticks
+   also have their `restOpacity` forced to 0 internally, so without the
+   `!important` override here the joystick would fade to invisible instead of
+   staying visible while held. */
+.joystick {
+  opacity: 0.9 !important;
 }
 
-.nipple:active {
-  opacity: 0.8 !important;
+.joystick .front {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(200, 200, 200, 0.8)) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
-.nipple .front {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(200, 200, 200, 0.7));
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.nipple .back {
-  background: radial-gradient(circle, rgba(100, 100, 100, 0.3), rgba(50, 50, 50, 0.2));
-  border: 2px solid rgba(255, 255, 255, 0.3);
+.joystick .back {
+  background: radial-gradient(circle, rgba(155, 188, 15, 0.35), rgba(77, 102, 18, 0.25)) !important;
+  border: 2px solid rgba(198, 226, 106, 0.6);
 }
 
 /* Responsive adjustments */
@@ -213,11 +228,6 @@
     width: 60px;
     height: 60px;
     font-size: 11px;
-  }
-
-  .joystick-zone {
-    width: 120px;
-    height: 120px;
   }
 
   .mobile-controls-toolbar {
@@ -244,10 +254,41 @@
     height: 50px;
     font-size: 10px;
   }
+}
 
-  .joystick-zone {
-    width: 100px;
-    height: 100px;
-    bottom: 10px;
-  }
+/* Direction HUD: confirms joystick input is registering, independent of
+   whether a cartridge is loaded to actually act on it. */
+.mobile-direction-hud {
+  position: fixed;
+  /* Bottom-center, clear of the toolbar (top) and SHOOT/JUMP (bottom-right)
+     regardless of how many rows the toolbar wraps to. */
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 105;
+  pointer-events: none;
+  font-family: var(--gb-font-pixel, monospace);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.mobile-direction-hud__badge {
+  background: rgba(11, 13, 10, 0.7);
+  border: 1px solid var(--gb-border, #3a4030);
+  color: var(--gb-text-dim, #5b6353);
+  border-radius: 4px;
+  padding: 3px 9px;
+  transition:
+    color 0.05s ease,
+    border-color 0.05s ease,
+    background 0.05s ease;
+}
+
+.mobile-direction-hud__badge--active {
+  color: var(--gb-bg, #0b0d0a);
+  border-color: var(--gb-accent, #9bbc0f);
+  background: var(--gb-accent, #9bbc0f);
 }

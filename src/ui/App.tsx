@@ -8,6 +8,7 @@ import { delay } from '@/src/setup/utils/common';
 import { AssetsLoaded, extractAssets } from '@/src/assets';
 import { setup } from '@/src/main';
 import { ref, state } from '@/src/setup/store';
+import { isTouchDevice } from '@/src/setup/utils/device';
 import Inventory from '@/src/ui/components/inventory/Inventory';
 import Menu from '@/src/ui/components/menu/Menu';
 import Dialog from '@/src/ui/components/Dialog';
@@ -19,7 +20,21 @@ const App: Component = () => {
   const [finished, setFinished] = createSignal(false);
   const [startClicked, setStartClicked] = createSignal(false);
 
-  const handleStart = () => setStartClicked(true);
+  const handleStart = () => {
+    // Must run synchronously inside the click handler — user activation for
+    // requestFullscreen is lost once we cross the `delay(100)` in the effect
+    // below. Fullscreen on `document.body` (not documentElement) to match
+    // the element PlayerController.pointerLock() locks the pointer on.
+    document.body
+      .requestFullscreen?.()
+      .then(() => {
+        if (isTouchDevice() && screen.orientation && 'lock' in screen.orientation) {
+          (screen.orientation as any).lock('landscape').catch(() => {});
+        }
+      })
+      .catch(() => {});
+    setStartClicked(true);
+  };
 
   createEffect(() => {
     if (startClicked()) return delay(100).then(setup);

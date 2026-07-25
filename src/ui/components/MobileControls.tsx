@@ -18,6 +18,15 @@ export default function MobileControls() {
   let activeJoysticksRef: any[] = [];
   const [isFullscreen, setIsFullscreen] = createSignal(!!document.fullscreenElement);
   const [portrait, setPortrait] = createSignal(isPortrait());
+  // Visual proof the joystick is registering input, independent of whether a
+  // cartridge is loaded to actually act on it (sendKeyPress no-ops otherwise).
+  const [moveDirection, setMoveDirection] = createSignal<'up' | 'down' | 'left' | 'right' | null>(null);
+  const [rotateDirection, setRotateDirection] = createSignal<'left' | 'right' | null>(null);
+  // Only tear down/rebuild the joysticks on resize when the orientation
+  // actually flipped — a resize can also fire for unrelated reasons (e.g.
+  // entering fullscreen), and destroying an in-progress touch mid-drag would
+  // strand it (its 'move'/'end' events would target a destroyed collection).
+  let lastPortrait = isPortrait();
 
   createEffect(() => {
     if (ref.cartridge?.keys) {
@@ -42,10 +51,32 @@ export default function MobileControls() {
   };
 
   const handleJoystickMove = (joystick: any) => {
-    joystick.on('move', (_evt: any, data: any) => {
-      if (!ref.cartridge?.game) return;
+    // nipplejs's event system calls listeners with a SINGLE argument,
+    // `{type, target, data}` (see Super.trigger in nipplejs/src/Super.ts) —
+    // NOT `(evt, data)`. The payload is `evt.data`, not a second parameter.
+    // Getting this wrong throws "Cannot read properties of undefined" on
+    // every single move event, which silently aborts the handler before
+    // sendKeyPress ever runs — the joystick nub still visually tracks the
+    // finger (that's driven entirely inside the library), but the character
+    // never moves.
+    joystick.on('move', (evt: any) => {
+      // `vector` is {x, y} normalized to the joystick radius, with +x = right
+      // and +y = up (nipplejs already flips the sign for y). Simpler and less
+      // error-prone than reasoning about `angle.degree`, which nipplejs
+      // rewrites in-place to `180 - rawAngle` before the 'move' event fires.
+      const vector = evt.data.vector || { x: 0, y: 0 };
+      // The very first move fires synchronously at touchdown with a zero
+      // vector (before any real displacement) — ignore it rather than
+      // tie-break it into a phantom direction.
+      if (vector.x === 0 && vector.y === 0) return;
 
-      const angle = data.angle?.degree || 0;
+      let direction: 'up' | 'down' | 'left' | 'right';
+      if (Math.abs(vector.x) > Math.abs(vector.y)) direction = vector.x > 0 ? 'right' : 'left';
+      else direction = vector.y > 0 ? 'up' : 'down';
+
+      setMoveDirection(direction);
+
+      if (!ref.cartridge?.game) return;
 
       // Reset all directions
       ref.cartridge.game.sendKeyPress(keyMap.up, false);
@@ -53,23 +84,12 @@ export default function MobileControls() {
       ref.cartridge.game.sendKeyPress(keyMap.left, false);
       ref.cartridge.game.sendKeyPress(keyMap.right, false);
 
-      // Map angle to direction
-      if (angle >= 315 || angle < 45) {
-        // Right
-        ref.cartridge.game.sendKeyPress(keyMap.right, true);
-      } else if (angle >= 45 && angle < 135) {
-        // Down
-        ref.cartridge.game.sendKeyPress(keyMap.down, true);
-      } else if (angle >= 135 && angle < 225) {
-        // Left
-        ref.cartridge.game.sendKeyPress(keyMap.left, true);
-      } else if (angle >= 225 && angle < 315) {
-        // Up
-        ref.cartridge.game.sendKeyPress(keyMap.up, true);
-      }
+      ref.cartridge.game.sendKeyPress(keyMap[direction], true);
     });
 
     joystick.on('end', () => {
+      setMoveDirection(null);
+
       if (!ref.cartridge?.game) return;
       // Release all keys
       ref.cartridge.game.sendKeyPress(keyMap.up, false);
@@ -80,26 +100,23 @@ export default function MobileControls() {
   };
 
   const handleRotationJoystick = (joystick: any) => {
-    joystick.on('move', (_evt: any, data: any) => {
+    joystick.on('move', (evt: any) => {
+      // Left half of the zone = turn left, right half = turn right.
+      const vector = evt.data.vector || { x: 0, y: 0 };
+      if (vector.x === 0 && vector.y === 0) return;
+      const direction = vector.x < 0 ? 'left' : 'right';
+
+      setRotateDirection(direction);
+
       if (!ref.cartridge?.game) return;
 
-      const angle = data.angle?.degree || 0;
-
-      // Reset rotation
-      ref.cartridge.game.sendKeyPress(keyMap.left, false);
-      ref.cartridge.game.sendKeyPress(keyMap.right, false);
-
-      // Left half = turn left, right half = turn right
-      if (angle < 180) {
-        ref.cartridge.game.sendKeyPress(keyMap.right, true);
-        ref.cartridge.game.sendKeyPress(keyMap.left, false);
-      } else {
-        ref.cartridge.game.sendKeyPress(keyMap.left, true);
-        ref.cartridge.game.sendKeyPress(keyMap.right, false);
-      }
+      ref.cartridge.game.sendKeyPress(keyMap.left, direction === 'left');
+      ref.cartridge.game.sendKeyPress(keyMap.right, direction === 'right');
     });
 
     joystick.on('end', () => {
+      setRotateDirection(null);
+
       if (!ref.cartridge?.game) return;
       ref.cartridge.game.sendKeyPress(keyMap.left, false);
       ref.cartridge.game.sendKeyPress(keyMap.right, false);
@@ -114,7 +131,8 @@ export default function MobileControls() {
   };
 
   const setupControls = () => {
-    setPortrait(isPortrait());
+    lastPortrait = isPortrait();
+    setPortrait(lastPortrait);
     destroyJoysticks();
 
     if (!isTouchDevice() || !state.started || state.isPaused) return;
@@ -181,15 +199,22 @@ export default function MobileControls() {
     setupControls();
   });
 
+  const handleResize = () => {
+    const nowPortrait = isPortrait();
+    if (nowPortrait === lastPortrait) return;
+    lastPortrait = nowPortrait;
+    setupControls();
+  };
+
   onMount(() => {
     window.addEventListener('orientationchange', setupControls);
-    window.addEventListener('resize', setupControls);
+    window.addEventListener('resize', handleResize);
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
 
     onCleanup(() => {
       window.removeEventListener('orientationchange', setupControls);
-      window.removeEventListener('resize', setupControls);
+      window.removeEventListener('resize', handleResize);
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       destroyJoysticks();
     });
@@ -288,6 +313,21 @@ export default function MobileControls() {
         </Show>
       </div>
       <Show when={!state.isPaused}>
+        {/* Always visible during gameplay, so the user can confirm a touch
+            registered even before they've dragged it anywhere. */}
+        <div class="mobile-direction-hud">
+          <span class="mobile-direction-hud__badge" classList={{ 'mobile-direction-hud__badge--active': !!moveDirection() }}>
+            {moveDirection() ? `MOVE ${moveDirection()!.toUpperCase()}` : 'MOVE'}
+          </span>
+          <Show when={!portrait()}>
+            <span
+              class="mobile-direction-hud__badge"
+              classList={{ 'mobile-direction-hud__badge--active': !!rotateDirection() }}
+            >
+              {rotateDirection() ? `TURN ${rotateDirection()!.toUpperCase()}` : 'TURN'}
+            </span>
+          </Show>
+        </div>
         <div class="mobile-controls">
           {/* Portrait Mode */}
           <Show when={portrait()}>
@@ -319,8 +359,8 @@ export default function MobileControls() {
           {/* Landscape Mode */}
           <Show when={!portrait()}>
             <div class="joystick-container landscape">
-              <div class="joystick-zone" ref={leftJoystickRef} style={{ left: '0', bottom: '0' }}></div>
-              <div class="joystick-zone" ref={rightJoystickRef} style={{ right: '0', bottom: '0' }}></div>
+              <div class="joystick-zone joystick-zone--left" ref={leftJoystickRef}></div>
+              <div class="joystick-zone joystick-zone--right" ref={rightJoystickRef}></div>
 
               <div class="mobile-buttons landscape">
                 <button
