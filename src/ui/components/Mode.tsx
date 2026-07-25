@@ -10,24 +10,21 @@ export default function Mode() {
   }, [ref.cartridge]);
 
   return (
-    <div class="row position-fixed top-0 w-100">
+    <div class="gb-hud">
       <Show when={keys().length > 0}>
-        <div class="col-12 d-flex justify-content-center text-center gap-2 small">
-          <span>Keys: </span>
+        <div class="gb-hud__row gb-hud__keys">
+          <span>Keys:</span>
           {keys().map(({ key, fn }) => (
-            <>
-              <span>
-                <kbd>{key}</kbd> - <span>{fn}</span>;
-              </span>
-            </>
+            <span class="gb-hud__chip">
+              <kbd>{key}</kbd> <span>{fn}</span>
+            </span>
           ))}
         </div>
       </Show>
-      <div class="col-12 d-flex justify-content-center text-center gap-2">
-        <span>Mode: </span> <strong> {mode()}</strong>{' '}
+      <div class="gb-hud__row gb-hud__status">
+        <span>Mode:</span> <strong>{mode()}</strong>
         <span>
-          {' '}
-          (Press <b>M</b> to change){' '}
+          (Press <b>M</b> to change)
         </span>
       </div>
     </div>

@@ -9,7 +9,7 @@ export default function Dialog() {
       </Modal.Header>
 
       <Modal.Body>
-        <p innerHTML={modal.description} />
+        <p class="gb-dialog__body" innerHTML={modal.description} />
       </Modal.Body>
     </Modal>
   );
