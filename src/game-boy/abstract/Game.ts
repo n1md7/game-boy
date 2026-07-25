@@ -64,6 +64,12 @@ export abstract class Game {
     this.unsubscribeUserInputs();
   }
 
+  public sendKeyPress(keyCode: number, isPressed: boolean) {
+    const mappedCode = this.key(keyCode);
+    const domKeyCode = emulatorsUi.controls.domToKeyCode(mappedCode);
+    this.commandInterface.sendKeyEvent(domKeyCode, isPressed);
+  }
+
   protected subscribeUserInputs() {
     emulatorsUi.sound.audioNode(this.commandInterface);
 

@@ -45,6 +45,7 @@
     "emulators-ui": "^0.73.9",
     "js-dos": "^7.5.0",
     "lil-gui": "^0.21.0",
+    "nipplejs": "^1.0.4",
     "solid-bootstrap": "^1.0.21",
     "solid-js": "^1.9.14",
     "stats.js": "^0.17.0",

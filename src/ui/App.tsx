@@ -12,6 +12,7 @@ import Inventory from '@/src/ui/components/inventory/Inventory';
 import Menu from '@/src/ui/components/menu/Menu';
 import Dialog from '@/src/ui/components/Dialog';
 import Mode from '@/src/ui/components/Mode';
+import MobileControls from '@/src/ui/components/MobileControls';
 
 const App: Component = () => {
   const [progress, setProgress] = createSignal(0.0);
@@ -50,6 +51,7 @@ const App: Component = () => {
       <Show when={state.started && !state.isPaused}>
         <Mode />
       </Show>
+      <MobileControls />
       <Menu />
       <Inventory />
       <Dialog />
