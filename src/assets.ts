@@ -1,6 +1,6 @@
 import { MyGLTFLoader, MyTextureLoader } from '@/src/setup/utils/Loader';
 import { Texture } from 'three';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const GLTFLoader = new MyGLTFLoader();
 const TextureLoader = new MyTextureLoader();

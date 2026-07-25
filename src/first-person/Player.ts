@@ -1,6 +1,6 @@
 import { Vector2, Vector3 } from 'three';
 import { Camera } from '@/src/setup';
-import { Capsule } from 'three/examples/jsm/math/Capsule';
+import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 import { Octree } from 'three/examples/jsm/math/Octree.js';
 
 type Action = {
@@ -22,7 +22,10 @@ export class Player {
 
   private isGrounded = false;
 
-  constructor(private readonly camera: Camera, private readonly world: Octree) {
+  constructor(
+    private readonly camera: Camera,
+    private readonly world: Octree,
+  ) {
     const start = new Vector3(0, 1, 0);
     const end = new Vector3(0, 1.75, 0);
     this.body = new Capsule(start, end, 0.35);

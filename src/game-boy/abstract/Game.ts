@@ -17,7 +17,7 @@ export abstract class Game {
   protected commandInterface!: CommandInterface;
   protected screen!: Screen;
 
-  private rgba!: Uint8ClampedArray;
+  private rgba!: Uint8ClampedArray<ArrayBuffer>;
   private bundle!: Uint8Array;
 
   public constructor(public readonly image: Texture) {

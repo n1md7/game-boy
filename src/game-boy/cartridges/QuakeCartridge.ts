@@ -1,6 +1,6 @@
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 import { Quake } from '@/src/game-boy/games/Quake';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Texture } from 'three';
 
 export class QuakeCartridge extends Cartridge {

@@ -73,7 +73,11 @@ export default function Collection() {
               {inventory.cartridges.map((cartridge) => (
                 <Col xs={12} sm={8} md={6} lg={4} xl={3} xxl={3}>
                   <Card>
-                    <Image src={cartridge.thumbnail.image.src} class="card-img-top" style={{ 'max-height': '24rem' }} />
+                    <Image
+                      src={(cartridge.thumbnail.image as HTMLImageElement).src}
+                      class="card-img-top"
+                      style={{ 'max-height': '24rem' }}
+                    />
                     <Card.Body>
                       <Card.Title>
                         <strong>{cartridge.name}</strong>

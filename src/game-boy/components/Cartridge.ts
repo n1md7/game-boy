@@ -2,7 +2,7 @@ import { Game, GameKey } from '@/src/game-boy/abstract/Game';
 import { Cartridges } from '@/src/game-boy/enums/Cartridge';
 import { SphereGeometry, AxesHelper, Box3, ShaderMaterial, Texture } from 'three';
 import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { applyGui, gui } from '@/src/setup/utils/gui';
 import vertexShader from '@/src/game-boy/components/shaders/sphere/vertexShader.glsl';
 import fragmentShader from '@/src/game-boy/components/shaders/sphere/fragmentShader.glsl';
@@ -68,7 +68,7 @@ export abstract class Cartridge extends Group {
       new PlaneGeometry(0.5, 0.5),
       new MeshBasicMaterial({
         map: game.image,
-      })
+      }),
     );
     this.image.scale.multiplyScalar(0.12);
     this.image.position.set(0, 0.03, 0.006);
