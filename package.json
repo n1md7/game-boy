@@ -1,14 +1,13 @@
 {
-  "name": "threejs-setup",
+  "name": "3d-gameboy-world",
   "private": true,
-  "description": "ThreeJS boilerplate with Vite,TS and Electron",
+  "description": "3D simulated world with gameboy emulator",
   "author": {
     "name": "Harry Kodua",
     "email": "b.kodua@gmail.com",
     "url": "https://github.com/n1md7"
   },
   "license": "ISC",
-  "main": "electron-start.cjs",
   "bugs": {
     "url": "https://github.com/n1md7/three-boilerplate/issues"
   },
@@ -20,49 +19,37 @@
     "test": "vitest --mode=test --no-watch",
     "preview": "vite preview",
     "format": "npx lint-staged",
-    "electron": "electron electron-start.cjs",
-    "prepare": "husky install",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "prepare": "husky install"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.2.1",
-    "@electron-forge/maker-deb": "^6.2.1",
-    "@electron-forge/maker-rpm": "^6.2.1",
-    "@electron-forge/maker-squirrel": "^6.2.1",
-    "@electron-forge/maker-zip": "^6.2.1",
-    "@electron-forge/plugin-vite": "^6.2.1",
-    "@electron-forge/publisher-s3": "^6.2.1",
-    "@types/jest": "^29.5.2",
-    "@types/stats.js": "^0.17.0",
-    "@types/three": "^0.152.1",
-    "electron": "^25.2.0",
-    "husky": "^8.0.3",
-    "jsdom": "^22.1.0",
-    "lint-staged": "^13.2.3",
-    "prettier": "2.8.8",
-    "solid-devtools": "^0.27.3",
-    "typescript": "^5.1.6",
-    "vite": "^4.3.9",
-    "vite-plugin-glsl": "^1.1.2",
-    "vite-plugin-solid": "^2.7.0",
-    "vitest": "^0.32.2"
+    "@types/jest": "^30.0.0",
+    "@types/stats.js": "^0.17.4",
+    "@types/three": "^0.185.1",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
+    "lint-staged": "^17.2.0",
+    "prettier": "3.9.6",
+    "solid-devtools": "^0.34.5",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.6",
+    "vite-plugin-glsl": "^1.6.0",
+    "vite-plugin-solid": "^2.11.13",
+    "vitest": "^4.1.10"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "bootstrap": "^5.3.0",
-    "electron-squirrel-startup": "^1.0.0",
+    "bootstrap": "^5.3.8",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
     "js-dos": "^7.5.0",
-    "lil-gui": "^0.18.2",
-    "solid-bootstrap": "^1.0.14",
-    "solid-js": "^1.7.6",
+    "lil-gui": "^0.21.0",
+    "nipplejs": "^1.0.4",
+    "solid-bootstrap": "^1.0.21",
+    "solid-js": "^1.9.14",
     "stats.js": "^0.17.0",
-    "three": "^0.154.0"
+    "three": "^0.185.1"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -87,8 +74,8 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "18.15.0",
-    "npm": ">=9.0.0"
+    "node": ">=22",
+    "npm": ">=10"
   },
   "engineStrict": true
 }

@@ -1,0 +1,216 @@
+/* Toolbar */
+.mobile-controls-toolbar {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  z-index: 110;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+
+.toolbar-btn {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.toolbar-btn:active {
+  transform: scale(0.95);
+}
+
+.toolbar-btn.mode-btn {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.toolbar-btn.inventory-btn {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.toolbar-btn.pause-btn {
+  background: linear-gradient(135deg, #fa709a, #fee140);
+}
+
+.toolbar-btn.action-btn {
+  padding: 6px 10px;
+  font-size: 11px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mobile-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.mobile-controls > * {
+  pointer-events: auto;
+}
+
+/* Joystick Zones */
+.joystick-zone {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  bottom: 20px;
+}
+
+.joystick-zone:first-child {
+  left: 20px;
+}
+
+.joystick-zone:last-of-type {
+  right: 20px;
+}
+
+/* Portrait Mode */
+.mobile-buttons.portrait {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 110;
+}
+
+/* Landscape Mode */
+.joystick-container.landscape {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mobile-buttons.landscape {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 110;
+}
+
+/* Button Styles */
+.mobile-btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  transition:
+    transform 0.1s ease,
+    background-color 0.1s ease;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mobile-btn:active {
+  transform: scale(0.95);
+}
+
+.shoot-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ff5252);
+}
+
+.shoot-btn:active {
+  background: linear-gradient(135deg, #ff5252, #ff3333);
+}
+
+.jump-btn {
+  background: linear-gradient(135deg, #4ecdc4, #44b4a6);
+}
+
+.jump-btn:active {
+  background: linear-gradient(135deg, #44b4a6, #3a9a8c);
+}
+
+/* Nipple.js overrides */
+.nipple {
+  opacity: 0.6 !important;
+}
+
+.nipple:active {
+  opacity: 0.8 !important;
+}
+
+.nipple .front {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(200, 200, 200, 0.7));
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nipple .back {
+  background: radial-gradient(circle, rgba(100, 100, 100, 0.3), rgba(50, 50, 50, 0.2));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .mobile-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 11px;
+  }
+
+  .joystick-zone {
+    width: 120px;
+    height: 120px;
+  }
+
+  .mobile-controls-toolbar {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+
+  .toolbar-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .toolbar-btn.action-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .mobile-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 10px;
+  }
+
+  .joystick-zone {
+    width: 100px;
+    height: 100px;
+    bottom: 10px;
+  }
+}

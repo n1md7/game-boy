@@ -1,4 +1,4 @@
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { AmbientLight, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry } from 'three';
 import { Scene as ThreeScene } from 'three';
 import { gui } from '@/src/setup/utils/gui';
@@ -23,7 +23,7 @@ export default class Scene extends ThreeScene {
       new PlaneGeometry(100, 100),
       new MeshBasicMaterial({
         color: '#989797',
-      })
+      }),
     );
     wall.position.set(131, 57.178, -11.926);
     wall.rotation.set(0, -Math.PI / 2, 0);

@@ -1,6 +1,6 @@
 import { ImageLoader, LoadingManager, Texture, TextureLoader } from 'three';
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
 export const manager = new LoadingManager();
 
@@ -17,7 +17,7 @@ export class MyGLTFLoader {
         path,
         (resource) => resolve(resource),
         undefined,
-        (error) => reject(error)
+        (error) => reject(error),
       );
     });
   }
@@ -36,7 +36,7 @@ export class MyImageLoader {
         path,
         (resource) => resolve(resource),
         undefined,
-        (error) => reject(error)
+        (error) => reject(error),
       );
     });
   }
@@ -55,7 +55,7 @@ export class MyTextureLoader {
         path,
         (resource) => resolve(resource),
         undefined,
-        (error) => reject(error)
+        (error) => reject(error),
       );
     });
   }
@@ -74,7 +74,7 @@ export class MyFontLoader {
         path,
         (resource) => resolve(resource),
         undefined,
-        (error) => reject(error)
+        (error) => reject(error),
       );
     });
   }

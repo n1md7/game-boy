@@ -59,7 +59,6 @@ Technologies used
 - Vitest
 - Typescript
 - SolidJS
-- Electron
 
 ## How to run locally?
 
@@ -69,14 +68,4 @@ $ npm run dev
 
 # Build - Transpile to JS
 $ npm run build
-
-
-# Electron
-$ npm run electron
-# or
-$ npm run start
-
-# Build binaries
-$ npm run make
-$ npm run package
 ```

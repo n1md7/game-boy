@@ -17,7 +17,7 @@ export abstract class Game {
   protected commandInterface!: CommandInterface;
   protected screen!: Screen;
 
-  private rgba!: Uint8ClampedArray;
+  private rgba!: Uint8ClampedArray<ArrayBuffer>;
   private bundle!: Uint8Array;
 
   public constructor(public readonly image: Texture) {
@@ -64,6 +64,12 @@ export abstract class Game {
     this.unsubscribeUserInputs();
   }
 
+  public sendKeyPress(keyCode: number, isPressed: boolean) {
+    const mappedCode = this.key(keyCode);
+    const domKeyCode = emulatorsUi.controls.domToKeyCode(mappedCode);
+    this.commandInterface.sendKeyEvent(domKeyCode, isPressed);
+  }
+
   protected subscribeUserInputs() {
     emulatorsUi.sound.audioNode(this.commandInterface);
 
@@ -85,11 +91,14 @@ export abstract class Game {
   }
 
   private onKeyDown(e: KeyboardEvent) {
+    if (e.repeat) return;
+    e.preventDefault();
     const keyCode = emulatorsUi.controls.domToKeyCode(this.key(e.keyCode));
     this.commandInterface.sendKeyEvent(keyCode, true);
   }
 
   private onKeyUp(e: KeyboardEvent) {
+    e.preventDefault();
     const keyCode = emulatorsUi.controls.domToKeyCode(this.key(e.keyCode));
     this.commandInterface.sendKeyEvent(keyCode, false);
   }

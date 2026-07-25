@@ -4,7 +4,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "strict": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -16,12 +16,12 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "types": ["vitest/globals", "node"],
     "jsx": "react-jsx",
     "jsxImportSource": "solid-js",
     "paths": {
       "@/*": ["./*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }
