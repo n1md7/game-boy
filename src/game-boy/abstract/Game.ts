@@ -85,11 +85,14 @@ export abstract class Game {
   }
 
   private onKeyDown(e: KeyboardEvent) {
+    if (e.repeat) return;
+    e.preventDefault();
     const keyCode = emulatorsUi.controls.domToKeyCode(this.key(e.keyCode));
     this.commandInterface.sendKeyEvent(keyCode, true);
   }
 
   private onKeyUp(e: KeyboardEvent) {
+    e.preventDefault();
     const keyCode = emulatorsUi.controls.domToKeyCode(this.key(e.keyCode));
     this.commandInterface.sendKeyEvent(keyCode, false);
   }
