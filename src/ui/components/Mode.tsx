@@ -1,9 +1,10 @@
-import { mode, ref } from '@/src/setup/store';
+import { mode, ref, toggleMode } from '@/src/setup/store';
 import { createEffect, createSignal, Show } from 'solid-js';
 import { GameKey } from '@/src/game-boy/abstract/Game';
 
 export default function Mode() {
   const [keys, setKeys] = createSignal<GameKey[]>([]);
+  const isMobile = () => window.innerWidth < 768;
 
   createEffect(() => {
     ref.cartridge?.keys && setKeys(ref.cartridge.keys);
@@ -22,10 +23,15 @@ export default function Mode() {
         </div>
       </Show>
       <div class="gb-hud__row gb-hud__status">
-        <span>Mode:</span> <strong>{mode()}</strong>
-        <span>
-          (Press <b>M</b> to change)
-        </span>
+        <span>Mode:</span>
+        <button
+          class="gb-mode-button"
+          onClick={toggleMode}
+          style={{ cursor: 'pointer', background: 'none', border: 'none', color: 'inherit', padding: 0 }}
+        >
+          <strong>{mode()}</strong>
+        </button>
+        <span>{isMobile() ? '(click to toggle)' : '(Press M to change)'}</span>
       </div>
     </div>
   );
