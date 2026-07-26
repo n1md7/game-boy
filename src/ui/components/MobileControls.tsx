@@ -3,6 +3,7 @@ import { ref, state, mode, inventoryToggle, pause, resume, toggleMode } from '@/
 import { isPortrait, isTouchDevice } from '@/src/setup/utils/device';
 import nipplejs from 'nipplejs';
 import '@/src/ui/components/MobileControls.css';
+import { controlEmitter } from '@/src/setup/utils/controls';
 
 export default function MobileControls() {
   let portraitZoneRef: HTMLDivElement | undefined;
@@ -248,13 +249,21 @@ export default function MobileControls() {
 
   const handleJumpStart = () => {
     if (ref.cartridge?.game) ref.cartridge.game.sendKeyPress(keyMap.jump, true);
+    controlEmitter.emit('keydown', 'Space');
   };
 
   const handleJumpEnd = () => {
     if (ref.cartridge?.game) ref.cartridge.game.sendKeyPress(keyMap.jump, false);
+    controlEmitter.emit('keyup', 'Space');
   };
 
-  const handleActionKeyPress = (keyCode: number) => {
+  const handleActionKeyPress = (keyCode: number, label: string) => {
+    controlEmitter.emit('keydown', label);
+
+    setTimeout(() => {
+      controlEmitter.emit('keyup', label);
+    }, 100);
+
     if (ref.cartridge?.game) {
       ref.cartridge.game.sendKeyPress(keyCode, true);
       // Auto-release after 100ms for weapon selection
@@ -298,8 +307,8 @@ export default function MobileControls() {
               return (
                 <button
                   class="toolbar-btn action-btn"
-                  onTouchStart={() => handleActionKeyPress(keyCode)}
-                  onMouseDown={() => handleActionKeyPress(keyCode)}
+                  onTouchStart={() => handleActionKeyPress(keyCode, label)}
+                  onMouseDown={() => handleActionKeyPress(keyCode, label)}
                   title={label}
                 >
                   {label.length > 3 ? key : label}

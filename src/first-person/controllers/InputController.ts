@@ -1,4 +1,5 @@
 import { changeCameraMode, inventoryToggle, mode, pause, toggleMode } from '@/src/setup/store';
+import { controlEmitter } from '@/src/setup/utils/controls';
 
 export class InputController extends EventTarget {
   private moveForward = false;
@@ -12,11 +13,15 @@ export class InputController extends EventTarget {
   subscribe() {
     document.addEventListener('keydown', this.onKeyDown.bind(this));
     document.addEventListener('keyup', this.onKeyUp.bind(this));
+    controlEmitter.on('keydown', this.onKeyDown.bind(this));
+    controlEmitter.on('keyup', this.onKeyUp.bind(this));
   }
 
   unsubscribe() {
     document.removeEventListener('keydown', this.onKeyDown.bind(this));
     document.removeEventListener('keyup', this.onKeyUp.bind(this));
+    controlEmitter.off('keydown', this.onKeyDown.bind(this));
+    controlEmitter.off('keyup', this.onKeyUp.bind(this));
   }
 
   public get actions() {
