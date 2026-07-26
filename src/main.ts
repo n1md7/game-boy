@@ -16,6 +16,12 @@ import { PlayerController } from '@/src/first-person/controllers/PlayerControlle
 import { inventory, pause, resume, setRef, setState, show, showModal, state } from '@/src/setup/store';
 import { WolfensteinCartridge } from '@/src/game-boy/cartridges/WolfensteinCartridge';
 
+const isMobileDevice = () => {
+  const hasTouch = window.matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
+  const isNarrowViewport = window.innerWidth < 1024;
+  return hasTouch || isNarrowViewport;
+};
+
 export function setup() {
   const FPS = 60;
   const DELAY = 1000 / FPS; // millis
@@ -105,11 +111,17 @@ export function setup() {
                 // First cartridge, show info
                 showModal(
                   'Info',
-                  `You picked up <b>${cartridge.name}</b> cartridge. ` +
-                    `Press <kbd>TAB</kbd> to check the inventory. You can select the cartridge from the inventory and play it. <br> <br>` +
-                    'You can use the <kbd>M</kbd> key to switch between First Person and Emulator modes. ' +
-                    'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
-                    'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.',
+                  isMobileDevice()
+                    ? `You picked up <b>${cartridge.name}</b> cartridge. ` +
+                        `Tap the Inventory button to open your collection. Select this cartridge and tap Play to insert it into the console. <br> <br>` +
+                        'Double-tap on the screen to switch between First Person and Emulator modes. ' +
+                        'When in Emulator mode, you can use the ENTER and ESC buttons to interact with the DOS game. FP movement is disabled. <br><br>' +
+                        'Use the SHOOT button to change the GameBoy camera position while in First Person mode.'
+                    : `You picked up <b>${cartridge.name}</b> cartridge. ` +
+                        `Press <kbd>TAB</kbd> to check the inventory. You can select the cartridge from the inventory and play it. <br> <br>` +
+                        'You can use the <kbd>M</kbd> key to switch between First Person and Emulator modes. ' +
+                        'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
+                        'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.',
                 );
               }
             }

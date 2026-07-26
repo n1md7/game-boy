@@ -1,14 +1,17 @@
 @font-face {
   font-family: 'Kenpixel';
-  src: url('/fonts/ttf/kenpixel.ttf') format('truetype');
+  src:
+    url('/fonts/ttf/kenpixel.ttf?v=1') format('truetype'),
+    url('/fonts/kenpixel.woff2') format('woff2'),
+    url('/fonts/kenpixel.woff') format('woff');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: fallback;
 }
 
 body.gb-theme {
-  --gb-font-body: 'Consolas', 'SFMono-Regular', ui-monospace, Menlo, monospace;
-  --gb-font-pixel: 'Kenpixel', var(--gb-font-body);
+  --gb-font-body: 'Courier New', Courier, ui-monospace, monospace;
+  --gb-font-pixel: 'Kenpixel', 'Courier New', Courier, ui-monospace, monospace;
 
   /* Surfaces */
   --gb-bg: #0b0d0a;

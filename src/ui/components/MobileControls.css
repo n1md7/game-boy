@@ -131,6 +131,56 @@
 }
 
 /* Portrait Mode */
+.mobile-action-keys.portrait {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 111;
+  pointer-events: auto;
+}
+
+.mobile-action-key {
+  width: 60px;
+  height: 40px;
+  border-radius: 4px;
+  border: 2px solid #545c44;
+  background: #20241c;
+  color: #e7ecd9;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.mobile-action-key:active {
+  transform: scale(0.95);
+  background: #4d6612;
+}
+
+.mobile-action-key.esc-btn {
+  border-color: #8b9480;
+  color: #8b9480;
+}
+
+.mobile-action-key.enter-btn {
+  border-color: #e0a63a;
+  color: #e0a63a;
+}
+
 .mobile-buttons.portrait {
   position: fixed;
   bottom: 20px;
@@ -254,6 +304,89 @@
     height: 50px;
     font-size: 10px;
   }
+}
+
+/* Portrait mode warning */
+.mobile-portrait-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(11, 13, 10, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+  pointer-events: auto;
+}
+
+.portrait-message {
+  text-align: center;
+  color: var(--gb-text, #e7ecd9);
+  font-family: var(--gb-font-pixel, monospace);
+  padding: 2rem;
+  max-width: 300px;
+}
+
+.portrait-message h2 {
+  font-size: 28px;
+  margin: 0 0 1rem 0;
+  color: var(--gb-accent-strong, #c6e26a);
+  font-weight: bold;
+}
+
+.portrait-message p {
+  font-size: 14px;
+  margin: 0.5rem 0;
+  line-height: 1.6;
+  color: var(--gb-text-muted, #8b9480);
+}
+
+.portrait-fullscreen-btn {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--gb-cta, #e0a63a);
+  color: #000;
+  border: 2px solid var(--gb-cta, #e0a63a);
+  border-radius: 4px;
+  font-family: var(--gb-font-pixel, monospace);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  transition:
+    transform 0.1s ease,
+    background 0.1s ease;
+}
+
+.portrait-fullscreen-btn:active {
+  transform: scale(0.95);
+  background: #d4991f;
+}
+
+.portrait-action-keys {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 15px;
+  z-index: 121;
+  pointer-events: auto;
+}
+
+/* Landscape action keys */
+.mobile-action-keys.landscape {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 111;
+  pointer-events: auto;
 }
 
 /* Direction HUD: confirms joystick input is registering, independent of

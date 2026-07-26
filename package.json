@@ -43,6 +43,7 @@
     "bootstrap": "^5.3.8",
     "emulators": "^0.73.8",
     "emulators-ui": "^0.73.9",
+    "is-mobile": "^5.0.0",
     "js-dos": "^7.5.0",
     "lil-gui": "^0.21.0",
     "nipplejs": "^1.0.4",

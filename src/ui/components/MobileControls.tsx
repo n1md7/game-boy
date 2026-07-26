@@ -278,6 +278,36 @@ export default function MobileControls() {
     controlEmitter.emit('keyup', 'Space');
   };
 
+  const handleEnterPress = () => {
+    // Send to DOS emulator (Enter key code = 13)
+    if (ref.cartridge?.game) {
+      ref.cartridge.game.sendKeyPress(13, true);
+      setTimeout(() => {
+        ref.cartridge?.game.sendKeyPress(13, false);
+      }, 100);
+    }
+    // Also emit for first-person mode
+    controlEmitter.emit('keydown', 'Enter');
+    setTimeout(() => {
+      controlEmitter.emit('keyup', 'Enter');
+    }, 100);
+  };
+
+  const handleEscPress = () => {
+    // Send to DOS emulator (Escape key code = 27)
+    if (ref.cartridge?.game) {
+      ref.cartridge.game.sendKeyPress(27, true);
+      setTimeout(() => {
+        ref.cartridge?.game.sendKeyPress(27, false);
+      }, 100);
+    }
+    // Also emit for first-person mode
+    controlEmitter.emit('keydown', 'Escape');
+    setTimeout(() => {
+      controlEmitter.emit('keyup', 'Escape');
+    }, 100);
+  };
+
   const handleActionKeyPress = (keyCode: number, label: string) => {
     controlEmitter.emit('keydown', label);
 
@@ -303,7 +333,37 @@ export default function MobileControls() {
   };
 
   return (
-    <Show when={state.started && isTouchDevice()}>
+    <Show
+      when={state.started && isTouchDevice() && !portrait()}
+      fallback={
+        <Show when={state.started && isTouchDevice() && portrait()}>
+          <div class="mobile-portrait-warning">
+            <div class="portrait-message">
+              <h2>Please Rotate Your Phone</h2>
+              <p>This game requires landscape orientation to play.</p>
+              <p>Turn your device 90 degrees to the side to continue.</p>
+              <button class="portrait-fullscreen-btn" onClick={handleFullscreenToggle} title="Go Fullscreen">
+                Go Fullscreen
+              </button>
+            </div>
+            {/* Action keys available in portrait warning */}
+            <div class="portrait-action-keys">
+              <button class="mobile-action-key esc-btn" onMouseDown={handleEscPress} onTouchStart={handleEscPress} title="ESC">
+                ESC
+              </button>
+              <button
+                class="mobile-action-key enter-btn"
+                onMouseDown={handleEnterPress}
+                onTouchStart={handleEnterPress}
+                title="ENTER"
+              >
+                ENTER
+              </button>
+            </div>
+          </div>
+        </Show>
+      }
+    >
       <div class="mobile-controls-toolbar">
         <button class="toolbar-btn mode-btn" onClick={toggleMode} title="Toggle between First Person and Emulator mode">
           {mode() === 'Emulator' ? 'MODE: EMU' : 'MODE: FP'}
@@ -312,7 +372,7 @@ export default function MobileControls() {
           INVENTORY
         </button>
         <button class="toolbar-btn pause-btn" onClick={handlePauseToggle} title="Pause or Resume">
-          {state.isPaused ? 'RESUME' : 'PAUSE'}
+          SETTINGS
         </button>
         <button
           class="toolbar-btn fullscreen-btn"
@@ -338,9 +398,20 @@ export default function MobileControls() {
             })}
           </div>
         </Show>
-        <Show when={portrait() && !isFullscreen()}>
-          <div class="toolbar-hint">Rotate your device, or tap FULLSCREEN, for landscape play</div>
-        </Show>
+      </div>
+      {/* Action keys for landscape mode */}
+      <div class="mobile-action-keys landscape">
+        <button class="mobile-action-key esc-btn" onMouseDown={handleEscPress} onTouchStart={handleEscPress} title="ESC">
+          ESC
+        </button>
+        <button
+          class="mobile-action-key enter-btn"
+          onMouseDown={handleEnterPress}
+          onTouchStart={handleEnterPress}
+          title="ENTER"
+        >
+          ENTER
+        </button>
       </div>
       <Show when={!state.isPaused}>
         {/* Always visible during gameplay, so the user can confirm a touch
@@ -359,10 +430,12 @@ export default function MobileControls() {
           </Show>
         </div>
         <div class="mobile-controls">
-          {/* Portrait Mode */}
-          <Show when={portrait()}>
-            <div class="joystick-zone-portrait" ref={portraitZoneRef}></div>
-            <div class="mobile-buttons portrait">
+          {/* Landscape Mode - Only Mode */}
+          <div class="joystick-container landscape">
+            <div class="joystick-zone joystick-zone--left" ref={leftJoystickRef}></div>
+            <div class="joystick-zone joystick-zone--right" ref={rightJoystickRef}></div>
+
+            <div class="mobile-buttons landscape">
               <button
                 ref={shootButtonRef}
                 class="mobile-btn shoot-btn"
@@ -384,38 +457,7 @@ export default function MobileControls() {
                 JUMP
               </button>
             </div>
-          </Show>
-
-          {/* Landscape Mode */}
-          <Show when={!portrait()}>
-            <div class="joystick-container landscape">
-              <div class="joystick-zone joystick-zone--left" ref={leftJoystickRef}></div>
-              <div class="joystick-zone joystick-zone--right" ref={rightJoystickRef}></div>
-
-              <div class="mobile-buttons landscape">
-                <button
-                  ref={shootButtonRef}
-                  class="mobile-btn shoot-btn"
-                  onMouseDown={handleShootStart}
-                  onMouseUp={handleShootEnd}
-                  onTouchStart={handleShootStart}
-                  onTouchEnd={handleShootEnd}
-                >
-                  SHOOT
-                </button>
-                <button
-                  ref={jumpButtonRef}
-                  class="mobile-btn jump-btn"
-                  onMouseDown={handleJumpStart}
-                  onMouseUp={handleJumpEnd}
-                  onTouchStart={handleJumpStart}
-                  onTouchEnd={handleJumpEnd}
-                >
-                  JUMP
-                </button>
-              </div>
-            </div>
-          </Show>
+          </div>
         </div>
       </Show>
     </Show>

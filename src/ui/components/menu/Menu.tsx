@@ -1,5 +1,5 @@
 import { inventory, mute, resume, show, unmute } from '@/src/setup/store';
-import { Modal, Button } from 'solid-bootstrap';
+import { Modal } from 'solid-bootstrap';
 import { createEffect, createSignal, For, Show } from 'solid-js';
 
 type ScreenType = 'built-in' | 'external' | 'mirror';
@@ -43,7 +43,8 @@ const NAV_ITEMS: { id: Tab; label: string; icon: () => any }[] = [
 export default function Menu() {
   const [option, setOption] = createSignal<ScreenType>('mirror');
   const [tab, setTab] = createSignal<Tab>('display');
-  const handleResume = () => resume();
+  const [isMobile, setIsMobile] = createSignal(false);
+  const handleClose = () => resume();
   const handleDisplayOption = (type: ScreenType) => () => setOption(type);
 
   createEffect(() => {
@@ -52,18 +53,20 @@ export default function Menu() {
     else inventory.gameBoy?.mirrorMode.showBoth();
   }, [option(), inventory]);
 
+  createEffect(() => {
+    // Detect touch devices (phones and tablets like iPad)
+    const hasTouch = window.matchMedia('(pointer:coarse)').matches || 'ontouchstart' in window;
+    // Also check if viewport is narrower than desktop (includes tablets in portrait)
+    const isNarrowViewport = window.innerWidth < 1024;
+    setIsMobile(hasTouch || isNarrowViewport);
+  });
+
   return (
-    <Modal show={show.menu} fullscreen={true} keyboard={false} contentClass="gb-panel">
-      <Modal.Header class="justify-content-center">
-        <Modal.Title>Game Menu</Modal.Title>
+    <Modal show={show.menu} onHide={handleClose} fullscreen={true} keyboard={false} contentClass="gb-panel">
+      <Modal.Header class="justify-content-center" closeButton>
+        <Modal.Title>Settings</Modal.Title>
       </Modal.Header>
       <Modal.Body class="gb-menu">
-        <div class="gb-menu__resume">
-          <Button variant="primary" size="lg" class="w-100" onClick={handleResume}>
-            Resume
-          </Button>
-        </div>
-
         <div class="gb-sidebar-layout">
           <nav class="gb-sidebar-nav">
             <For each={NAV_ITEMS}>
@@ -159,30 +162,73 @@ export default function Menu() {
 
             <Show when={tab() === 'controls'}>
               <h4 class="gb-section-heading mb-3">Controls</h4>
-              <div class="gb-menu__controls-grid">
-                <div class="gb-menu__control-row">
-                  <kbd>WASD</kbd> <span>to move</span>
+
+              <Show when={isMobile()}>
+                <div class="gb-menu__controls-grid">
+                  <div class="gb-menu__control-row gb-menu__control-row--wide">
+                    <strong>First Person Mode (FP)</strong>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>Use the joystick on the left to move around the world</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>Tap the JUMP button to jump</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>Tap the SHOOT button to interact</span>
+                  </div>
+
+                  <div class="gb-menu__control-row gb-menu__control-row--wide">
+                    <strong>Emulator Mode (EMU)</strong>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>Open your Inventory to select and insert a cartridge</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>Use the ENTER button to interact with the DOS game</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>Use the ESC button to close the DOS game</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <span>FP movement is disabled in Emulator mode</span>
+                  </div>
+
+                  <div class="gb-menu__control-row gb-menu__control-row--wide">
+                    <strong>Mode Switching</strong>
+                  </div>
+                  <div class="gb-menu__control-row gb-menu__control-row--wide">
+                    <span>Double-tap on the screen to switch between First Person and Emulator modes</span>
+                  </div>
                 </div>
-                <div class="gb-menu__control-row">
-                  <kbd>Shift</kbd> <span>to run</span>
+              </Show>
+
+              <Show when={!isMobile()}>
+                <div class="gb-menu__controls-grid">
+                  <div class="gb-menu__control-row">
+                    <kbd>WASD</kbd> <span>to move</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <kbd>Shift</kbd> <span>to run</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <kbd>Space</kbd> <span>to jump</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <kbd>Tab</kbd> <span>to open Inventory menu</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <kbd>Esc</kbd> <span>to open Menu</span>
+                  </div>
+                  <div class="gb-menu__control-row">
+                    <kbd>C</kbd> <span>to change the GameBoy camera mode</span>
+                  </div>
+                  <div class="gb-menu__control-row gb-menu__control-row--wide">
+                    <kbd>M</kbd>{' '}
+                    <span>to change modes between Emulator and First Person. In Emulator mode FPS movement is disabled.</span>
+                  </div>
                 </div>
-                <div class="gb-menu__control-row">
-                  <kbd>Space</kbd> <span>to jump</span>
-                </div>
-                <div class="gb-menu__control-row">
-                  <kbd>Tab</kbd> <span>to open Inventory menu</span>
-                </div>
-                <div class="gb-menu__control-row">
-                  <kbd>Esc</kbd> <span>to open Menu</span>
-                </div>
-                <div class="gb-menu__control-row">
-                  <kbd>C</kbd> <span>to change the GameBoy camera mode</span>
-                </div>
-                <div class="gb-menu__control-row gb-menu__control-row--wide">
-                  <kbd>M</kbd>{' '}
-                  <span>to change modes between Emulator and First Person. In Emulator mode FPS movement is disabled.</span>
-                </div>
-              </div>
+              </Show>
             </Show>
 
             <Show when={tab() === 'objective'}>

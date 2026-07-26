@@ -27,7 +27,7 @@ export default function Inventory() {
 
   return (
     <Modal show={show.inventory} onHide={handleClose} fullscreen={true} keyboard={true} contentClass="gb-panel gb-panel--wide">
-      <Modal.Header class="justify-content-center">
+      <Modal.Header class="justify-content-center" closeButton>
         <Modal.Title>My inventory</Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -60,7 +60,6 @@ export default function Inventory() {
 
           <div class="gb-sidebar-content">
             <Show when={tab() === 'console'}>
-              <h4 class="gb-section-heading mb-3">Console</h4>
               <ConsoleCard />
             </Show>
             <Show when={tab() === 'cartridges'}>
@@ -69,29 +68,6 @@ export default function Inventory() {
           </div>
         </div>
       </Modal.Body>
-      <Modal.Footer style={{ display: 'flex', 'justify-content': 'flex-end', padding: '1rem' }}>
-        <button
-          class="gb-close-button"
-          onClick={handleClose}
-          style={{
-            padding: '10px 20px',
-            background: 'linear-gradient(135deg, #667eea, #764ba2)',
-            color: 'white',
-            border: 'none',
-            'border-radius': '6px',
-            'font-weight': 'bold',
-            'font-size': '14px',
-            cursor: 'pointer',
-            transition: 'transform 0.1s ease, background 0.1s ease',
-            'box-shadow': '0 2px 8px rgba(0, 0, 0, 0.3)',
-          }}
-          onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.95)')}
-          onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        >
-          CLOSE INVENTORY
-        </button>
-      </Modal.Footer>
     </Modal>
   );
 }
