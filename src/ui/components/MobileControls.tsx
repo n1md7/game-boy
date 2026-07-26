@@ -3,7 +3,7 @@ import { ref, state, mode, inventoryToggle, pause, resume, toggleMode } from '@/
 import { isPortrait, isTouchDevice } from '@/src/setup/utils/device';
 import nipplejs from 'nipplejs';
 import '@/src/ui/components/MobileControls.css';
-import { controlEmitter } from '@/src/setup/utils/controls';
+import { controlEmitter, joystickState } from '@/src/setup/utils/controls';
 
 export default function MobileControls() {
   let portraitZoneRef: HTMLDivElement | undefined;
@@ -77,26 +77,35 @@ export default function MobileControls() {
 
       setMoveDirection(direction);
 
-      if (!ref.cartridge?.game) return;
+      // Emulator path: send arrow keystrokes to the DOS game
+      if (ref.cartridge?.game) {
+        ref.cartridge.game.sendKeyPress(keyMap.up, false);
+        ref.cartridge.game.sendKeyPress(keyMap.down, false);
+        ref.cartridge.game.sendKeyPress(keyMap.left, false);
+        ref.cartridge.game.sendKeyPress(keyMap.right, false);
+        ref.cartridge.game.sendKeyPress(keyMap[direction], true);
+      }
 
-      // Reset all directions
-      ref.cartridge.game.sendKeyPress(keyMap.up, false);
-      ref.cartridge.game.sendKeyPress(keyMap.down, false);
-      ref.cartridge.game.sendKeyPress(keyMap.left, false);
-      ref.cartridge.game.sendKeyPress(keyMap.right, false);
-
-      ref.cartridge.game.sendKeyPress(keyMap[direction], true);
+      // First-person path: emit arrow key codes so InputController updates
+      // movement flags. InputController ignores these when mode === 'Emulator'.
+      const codeMap = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' } as const;
+      (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] as const).forEach((code) => controlEmitter.emit('keyup', code));
+      controlEmitter.emit('keydown', codeMap[direction]);
     });
 
     joystick.on('end', () => {
       setMoveDirection(null);
 
-      if (!ref.cartridge?.game) return;
-      // Release all keys
-      ref.cartridge.game.sendKeyPress(keyMap.up, false);
-      ref.cartridge.game.sendKeyPress(keyMap.down, false);
-      ref.cartridge.game.sendKeyPress(keyMap.left, false);
-      ref.cartridge.game.sendKeyPress(keyMap.right, false);
+      // Emulator path: release all arrow keys
+      if (ref.cartridge?.game) {
+        ref.cartridge.game.sendKeyPress(keyMap.up, false);
+        ref.cartridge.game.sendKeyPress(keyMap.down, false);
+        ref.cartridge.game.sendKeyPress(keyMap.left, false);
+        ref.cartridge.game.sendKeyPress(keyMap.right, false);
+      }
+
+      // First-person path: release all arrow keys
+      (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] as const).forEach((code) => controlEmitter.emit('keyup', code));
     });
   };
 
@@ -109,18 +118,30 @@ export default function MobileControls() {
 
       setRotateDirection(direction);
 
-      if (!ref.cartridge?.game) return;
+      // Emulator path: send left/right arrow to the DOS game for turning
+      if (ref.cartridge?.game) {
+        ref.cartridge.game.sendKeyPress(keyMap.left, direction === 'left');
+        ref.cartridge.game.sendKeyPress(keyMap.right, direction === 'right');
+      }
 
-      ref.cartridge.game.sendKeyPress(keyMap.left, direction === 'left');
-      ref.cartridge.game.sendKeyPress(keyMap.right, direction === 'right');
+      // First-person path: store normalized x/y so PlayerController can apply
+      // continuous camera rotation each frame while the joystick is held.
+      joystickState.rotationX = vector.x;
+      joystickState.rotationY = vector.y;
     });
 
     joystick.on('end', () => {
       setRotateDirection(null);
 
-      if (!ref.cartridge?.game) return;
-      ref.cartridge.game.sendKeyPress(keyMap.left, false);
-      ref.cartridge.game.sendKeyPress(keyMap.right, false);
+      // Emulator path: release turning keys
+      if (ref.cartridge?.game) {
+        ref.cartridge.game.sendKeyPress(keyMap.left, false);
+        ref.cartridge.game.sendKeyPress(keyMap.right, false);
+      }
+
+      // First-person path: stop rotating
+      joystickState.rotationX = 0;
+      joystickState.rotationY = 0;
     });
   };
 

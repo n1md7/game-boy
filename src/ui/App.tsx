@@ -44,9 +44,13 @@ const App: Component = () => {
   createEffect(async () => {
     if (!state.started) return;
 
-    if (state.isPaused) ref.player?.disable();
-    if (!state.isPaused) {
-      if (await ref.player?.pointerLock()) ref.player?.enable();
+    if (state.isPaused) {
+      ref.player?.disable();
+    } else if (isTouchDevice()) {
+      // Mobile has no pointer lock — enable input directly.
+      ref.player?.enable();
+    } else if (await ref.player?.pointerLock()) {
+      ref.player?.enable();
     }
   }, [state]);
 

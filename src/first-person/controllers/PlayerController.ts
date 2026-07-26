@@ -5,7 +5,8 @@ import { Camera } from '@/src/setup';
 import { Cartridge } from '@/src/game-boy/components/Cartridge';
 import { Player } from '@/src/first-person/Player';
 import { GameBoy } from '@/src/game-boy/GameBoy';
-import { setInventory } from '@/src/setup/store';
+import { setInventory, mode } from '@/src/setup/store';
+import { joystickState } from '@/src/setup/utils/controls';
 
 export class PlayerController {
   private readonly player: Player;
@@ -82,13 +83,23 @@ export class PlayerController {
   }
 
   exitPointerLock() {
-    document.exitPointerLock();
+    try {
+      document.exitPointerLock();
+    } catch (error) {
+      console.warn(error);
+    }
   }
 
   update(delta: number) {
     this.player.update(delta);
 
     if (!this.inputIsDisabled) this.player.action(this.inputController.actions, delta);
-    if (!this.mouseIsDisabled) this.player.rotation(this.mouseController.rotation);
+    if (!this.mouseIsDisabled) {
+      if (mode() !== 'Emulator') {
+        if (joystickState.rotationX !== 0) this.mouseController.rotation.y -= joystickState.rotationX * 2.0 * delta;
+        if (joystickState.rotationY !== 0) this.mouseController.rotation.x += joystickState.rotationY * 2.0 * delta;
+      }
+      this.player.rotation(this.mouseController.rotation);
+    }
   }
 }

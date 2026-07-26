@@ -15,3 +15,10 @@ export const controlEmitter = new (class extends TinyEmitter {
     } as unknown as KeyboardEvent);
   }
 })();
+
+// Joystick rotation state (-1 to 1). Set by MobileControls, read each frame
+// by PlayerController to drive continuous camera rotation in first-person.
+export const joystickState = {
+  rotationX: 0, // horizontal: negative = turn left, positive = turn right
+  rotationY: 0, // vertical: negative = look down, positive = look up
+};
