@@ -1,9 +1,9 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js';
 import { ref, state, mode, inventoryToggle, pause, resume, toggleMode } from '@/src/setup/store';
 import { isPortrait, isTouchDevice } from '@/src/setup/utils/device';
-import nipplejs from 'nipplejs';
 import '@/src/ui/components/MobileControls.css';
 import { controlEmitter, joystickState } from '@/src/setup/utils/controls';
+import { create, type Joystick } from 'nipplejs';
 
 export default function MobileControls() {
   let portraitZoneRef: HTMLDivElement | undefined;
@@ -48,10 +48,10 @@ export default function MobileControls() {
   };
 
   const createJoystick = (options: any) => {
-    return nipplejs.create(options);
+    return create(options);
   };
 
-  const handleJoystickMove = (joystick: any) => {
+  const handleJoystickMove = (joystick: Joystick) => {
     // nipplejs's event system calls listeners with a SINGLE argument,
     // `{type, target, data}` (see Super.trigger in nipplejs/src/Super.ts) —
     // NOT `(evt, data)`. The payload is `evt.data`, not a second parameter.
@@ -109,7 +109,7 @@ export default function MobileControls() {
     });
   };
 
-  const handleRotationJoystick = (joystick: any) => {
+  const handleRotationJoystick = (joystick: Joystick) => {
     joystick.on('move', (evt: any) => {
       // Left half of the zone = turn left, right half = turn right.
       const vector = evt.data.vector || { x: 0, y: 0 };
