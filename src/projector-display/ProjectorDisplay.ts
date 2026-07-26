@@ -1,21 +1,16 @@
-import { Group } from 'three';
 import { Screen } from '@/src/projector-display/components/Screen';
 import { Assets } from '@/src/assets';
-import { gui } from '@/src/setup/utils/gui';
-import { GenericGUI } from '@/src/abstract/GenericGUI';
+import { Group } from 'three';
 
-export class ProjectorDisplay extends GenericGUI {
+export class ProjectorDisplay {
   public readonly screen: Screen;
   private readonly group: Group;
   private readonly model: Group;
 
   constructor() {
-    super(gui.addFolder('Projector'), -200, 200, 0.001);
-
     this.group = new Group();
     this.group.name = 'Projector';
     this.model = Assets.ProjectorScreen.scene.clone();
-    // Let's use Full HD resolution for the projector.
     this.screen = new Screen(1920, 1080);
     this.group.add(this.screen.scene, this.model);
 
@@ -28,9 +23,7 @@ export class ProjectorDisplay extends GenericGUI {
     this.screen.scene.position.set(-0.01, 68.589, -0.01);
     this.screen.scene.rotation.set(0, -Math.PI / 2, 0);
     this.screen.scene.scale.multiplyScalar(110);
-    this.screen.displayNoSignal();
-
-    this.applyTransformationGUI(this.group);
+    this.screen.displayNoSignal('HDMI or Type-C');
   }
 
   get scene() {

@@ -1,6 +1,10 @@
 import { CanvasTexture, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 
 type MirroringMode = 'Built-in' | 'Mirror' | 'External';
+type Fullscreen = {
+  canvas?: HTMLCanvasElement;
+  context?: CanvasRenderingContext2D;
+};
 
 export abstract class GenericScreen {
   protected readonly context: CanvasRenderingContext2D;
@@ -13,10 +17,7 @@ export abstract class GenericScreen {
   private TypeC?: GenericScreen;
 
   private mirroring: MirroringMode = 'Built-in';
-  private fullscreen = {
-    canvas: null as HTMLCanvasElement | null,
-    context: null as CanvasRenderingContext2D | null,
-  };
+  private fullscreen: Fullscreen = {};
 
   protected constructor(width: number, height: number) {
     this.canvas = document.createElement('canvas');
@@ -61,8 +62,9 @@ export abstract class GenericScreen {
     }
 
     if (this.mirroring === 'Built-in') {
-      if (this.HDMI) this.HDMI.displayNoSignal();
-      if (this.TypeC) this.TypeC.displayNoSignal();
+      if (this.HDMI) this.HDMI.displayNoSignal('HDMI');
+      if (this.TypeC) this.TypeC.displayNoSignal('Type-C');
+
       return;
     }
 
@@ -82,8 +84,8 @@ export abstract class GenericScreen {
     }
 
     if (this.mirroring === 'Built-in') {
-      if (this.HDMI) this.HDMI.displayNoSignal();
-      if (this.TypeC) this.TypeC.displayNoSignal();
+      if (this.HDMI) this.HDMI.displayNoSignal('HDMI');
+      if (this.TypeC) this.TypeC.displayNoSignal('Type-C');
       return;
     }
 
@@ -99,8 +101,8 @@ export abstract class GenericScreen {
     this.TypeC = screen;
   }
 
-  displayNoSignal() {
-    this.write('No Signal! Please check your connection.');
+  displayNoSignal(port: string) {
+    this.write(`No Signal, ${port} not connected!`);
   }
 
   requestFullscreen() {
@@ -111,8 +113,8 @@ export abstract class GenericScreen {
       this.fullscreen.canvas!.onfullscreenchange = () => {
         if (!document.fullscreenElement) {
           this.fullscreen.canvas?.remove();
-          this.fullscreen.canvas = null;
-          this.fullscreen.context = null;
+          this.fullscreen.canvas = undefined;
+          this.fullscreen.context = undefined;
         }
       };
     });

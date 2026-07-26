@@ -4,12 +4,11 @@ import { SphereGeometry, AxesHelper, Box3, ShaderMaterial, Texture } from 'three
 import { GridHelper, Group, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { applyGui, gui } from '@/src/setup/utils/gui';
+import { Debug } from '@/src/setup/utils/common';
 import vertexShader from '@/src/game-boy/components/shaders/sphere/vertexShader.glsl';
 import fragmentShader from '@/src/game-boy/components/shaders/sphere/fragmentShader.glsl';
 
 export abstract class Cartridge extends Group {
-  static DEBUG = false;
-
   public equipped = false;
 
   public readonly game: Game;
@@ -57,12 +56,6 @@ export abstract class Cartridge extends Group {
     this.sphere = new Mesh(new SphereGeometry(0.5, 32, 32), this.material);
     this.sphere.position.set(0, 0, 0);
 
-    // Setup light of cartridge
-    // this.light = new PointLight(0xffffff, 0.35, 1, 1);
-    // this.light.position.set(0, 0.5, 0.3);
-    // this.light.lookAt(this.model.position);
-    // this.scene.add(this.light);
-
     // Setup poster image of cartridge
     this.image = new Mesh(
       new PlaneGeometry(0.5, 0.5),
@@ -75,9 +68,11 @@ export abstract class Cartridge extends Group {
 
     this.model.add(this.image);
 
-    Cartridge.DEBUG && this.scene.add(new GridHelper(1, 10));
-    Cartridge.DEBUG && this.scene.add(new AxesHelper(0.5));
-    Cartridge.DEBUG && this.attachGui();
+    if (Debug.enabled()) {
+      this.scene.add(new GridHelper(0.4, 16));
+      this.scene.add(new AxesHelper(0.2));
+      this.attachGui();
+    }
 
     this.scene.add(this.model, this.sphere);
   }
