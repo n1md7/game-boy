@@ -13,7 +13,7 @@ import { QuakeCartridge } from '@/src/game-boy/cartridges/QuakeCartridge';
 import { DiggerCartridge } from '@/src/game-boy/cartridges/DiggerCartridge';
 import { DukeCartridge } from '@/src/game-boy/cartridges/DukeCartridge';
 import { PlayerController } from '@/src/first-person/controllers/PlayerController';
-import { inventory, pause, resume, setRef, setState, show, showModal, state } from '@/src/setup/store';
+import { inventory, pause, resume, setRef, setState, show, showModal, showToast, state } from '@/src/setup/store';
 import { WolfensteinCartridge } from '@/src/game-boy/cartridges/WolfensteinCartridge';
 
 const isMobileDevice = () => {
@@ -123,6 +123,8 @@ export function setup() {
                         'When Emulator mode is enabled, you are interacting with either GameBoy or Projector screen, everything else is disabled. <br><br>' +
                         'Additionally, you can change GameBoy camera position by pressing <kbd>C</kbd> key.',
                 );
+              } else {
+                showToast(cartridge.name, 'Added to inventory.');
               }
             }
 

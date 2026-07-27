@@ -21,6 +21,22 @@ export const [modal, setModal] = createStore({
   description: '',
 });
 
+type Toast = { id: number; title: string; description?: string; leaving: boolean };
+
+export const [toasts, setToasts] = createStore<Toast[]>([]);
+
+let toastSeq = 0;
+
+export const showToast = (title: string, description?: string, duration = 4000) => {
+  const id = ++toastSeq;
+  setToasts(toasts.length, { id, title, description, leaving: false });
+  setTimeout(() => {
+    setToasts((toast) => toast.id === id, 'leaving', true);
+    // Give the exit animation (see gb-toast-out in style.css) time to play before unmounting.
+    setTimeout(() => setToasts((list) => list.filter((toast) => toast.id !== id)), 300);
+  }, duration);
+};
+
 type Inventory = {
   cartridges: Cartridge[];
   gameBoy?: GameBoy;

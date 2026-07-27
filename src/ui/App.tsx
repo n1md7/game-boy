@@ -12,6 +12,7 @@ import { isTouchDevice } from '@/src/setup/utils/device';
 import Inventory from '@/src/ui/components/inventory/Inventory';
 import Menu from '@/src/ui/components/menu/Menu';
 import Dialog from '@/src/ui/components/Dialog';
+import Toast from '@/src/ui/components/Toast';
 import Mode from '@/src/ui/components/Mode';
 import MobileControls from '@/src/ui/components/MobileControls';
 
@@ -74,6 +75,7 @@ const App: Component = () => {
       <Menu />
       <Inventory />
       <Dialog />
+      <Toast />
       <Show
         when={finished()}
         fallback={
